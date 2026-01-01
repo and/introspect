@@ -66,6 +66,20 @@ translations.ml = {
     "btn_delete_all": "Delete Everything",
     "msg_all_deleted": "All data deleted.",
 
+    // Introspection Modal
+    "modal_introspect_title": "Introspect Thought",
+    "label_thought": "Thought",
+    "label_created": "Created",
+    "label_recurrence": "Recurrence",
+    "label_comments": "Comments",
+    "placeholder_add_comment": "Add a comment...",
+    "btn_add_comment": "Add Comment",
+    "btn_save_changes": "Save Changes",
+    "empty_no_comments": "No comments yet. Add your first reflection.",
+    "err_comment_empty": "Please enter a comment.",
+    "err_select_nature": "Please select a nature.",
+
+
     // Footer
     "footer_guided_by": "Guided by the introspection framework of",
     "footer_source": "Source Code",

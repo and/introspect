@@ -494,6 +494,9 @@ function renderList() {
                 <div class="thought-causes-container">${rootCauseTags}</div>
                 <div style="display:flex; align-items:center; gap:0.5rem;">
                     <span>${date}</span>
+                    <button class="introspect-btn" data-action="introspect" data-id="${thought.id}" title="Introspect">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"></path></svg>
+                    </button>
                     <button class="edit-btn" data-action="edit" data-id="${thought.id}" title="Edit">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                     </button>
@@ -773,3 +776,226 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ========== INTROSPECTION MODAL ==========
+
+let introspectionThoughtId = null;
+
+const introspectionModal = document.getElementById('introspectionModal');
+const closeModalBtn = document.getElementById('closeIntrospectionModal');
+const modalThoughtContent = document.getElementById('modalThoughtContent');
+const modalThoughtMeta = document.getElementById('modalThoughtMeta');
+const modalScore = document.getElementById('modalScore');
+const modalUpvoteBtn = document.getElementById('modalUpvote');
+const modalDownvoteBtn = document.getElementById('modalDownvote');
+const modalCommentsList = document.getElementById('modalCommentsList');
+const modalCommentInput = document.getElementById('modalCommentInput');
+const modalAddCommentBtn = document.getElementById('modalAddComment');
+const saveIntrospectionBtn = document.getElementById('saveIntrospectionChanges');
+
+// Open Introspection Modal
+window.openIntrospectionModal = function(id) {
+    const thought = thoughts.find(t => t.id === id);
+    if (!thought) return;
+
+    introspectionThoughtId = id;
+
+    // Populate thought content
+    modalThoughtContent.textContent = thought.content;
+
+    // Populate metadata (timestamp, created date)
+    const date = new Date(thought.timestamp);
+    const formattedDate = date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    modalThoughtMeta.innerHTML = `<strong>${t('label_created')}:</strong> ${formattedDate}`;
+
+    // Populate root causes checkboxes
+    const rootCausesArray = Array.isArray(thought.rootCauses) ? thought.rootCauses : [thought.rootCause];
+    document.querySelectorAll('input[name="modalRootCause"]').forEach(cb => {
+        cb.checked = rootCausesArray.includes(cb.value);
+    });
+
+    // Populate nature radio
+    const natureRadio = document.querySelector(`input[name="modalNature"][value="${thought.classification}"]`);
+    if (natureRadio) natureRadio.checked = true;
+
+    // Populate score
+    const score = thought.score || 0;
+    modalScore.textContent = score;
+
+    // Populate comments
+    renderModalComments(thought);
+
+    // Show modal
+    introspectionModal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Prevent background scroll
+};
+
+// Close Modal
+function closeIntrospectionModal() {
+    introspectionModal.style.display = 'none';
+    document.body.style.overflow = ''; // Restore scroll
+    introspectionThoughtId = null;
+    modalCommentInput.value = '';
+}
+
+closeModalBtn.addEventListener('click', closeIntrospectionModal);
+
+// Close modal when clicking overlay
+introspectionModal.addEventListener('click', (e) => {
+    if (e.target === introspectionModal || e.target.classList.contains('modal-overlay')) {
+        closeIntrospectionModal();
+    }
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && introspectionModal.style.display === 'block') {
+        closeIntrospectionModal();
+    }
+});
+
+// Modal Vote Controls
+modalUpvoteBtn.addEventListener('click', () => {
+    if (!introspectionThoughtId) return;
+    const thought = thoughts.find(t => t.id === introspectionThoughtId);
+    if (thought) {
+        thought.score = (thought.score || 0) + 1;
+        modalScore.textContent = thought.score;
+    }
+});
+
+modalDownvoteBtn.addEventListener('click', () => {
+    if (!introspectionThoughtId) return;
+    const thought = thoughts.find(t => t.id === introspectionThoughtId);
+    if (thought) {
+        thought.score = (thought.score || 0) - 1;
+        modalScore.textContent = thought.score;
+    }
+});
+
+// Add Comment
+modalAddCommentBtn.addEventListener('click', () => {
+    if (!introspectionThoughtId) return;
+
+    const commentText = modalCommentInput.value.trim();
+    if (!commentText) {
+        alert(t('err_comment_empty') || 'Please enter a comment');
+        return;
+    }
+
+    const thought = thoughts.find(t => t.id === introspectionThoughtId);
+    if (!thought) return;
+
+    // Initialize comments array if it doesn't exist
+    if (!thought.comments) {
+        thought.comments = [];
+    }
+
+    // Add new comment
+    const newComment = {
+        id: Date.now(),
+        text: commentText,
+        timestamp: new Date().toISOString()
+    };
+
+    thought.comments.push(newComment);
+
+    // Clear input
+    modalCommentInput.value = '';
+
+    // Re-render comments
+    renderModalComments(thought);
+});
+
+// Render Comments in Modal
+function renderModalComments(thought) {
+    const comments = thought.comments || [];
+
+    if (comments.length === 0) {
+        modalCommentsList.innerHTML = `<div class="comment-empty" data-i18n="empty_no_comments">${t('empty_no_comments')}</div>`;
+        return;
+    }
+
+    // Sort comments by timestamp (newest first)
+    const sortedComments = [...comments].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    modalCommentsList.innerHTML = sortedComments.map(comment => {
+        const date = new Date(comment.timestamp);
+        const formattedDate = date.toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        return `
+            <div class="comment-item">
+                <div class="comment-header">
+                    <span class="comment-time">${formattedDate}</span>
+                </div>
+                <div class="comment-text">${escapeHtml(comment.text)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Save Changes
+saveIntrospectionBtn.addEventListener('click', () => {
+    if (!introspectionThoughtId) return;
+
+    const thought = thoughts.find(t => t.id === introspectionThoughtId);
+    if (!thought) return;
+
+    // Get selected root causes
+    const selectedRootCauses = Array.from(document.querySelectorAll('input[name="modalRootCause"]:checked'))
+        .map(cb => cb.value);
+
+    if (selectedRootCauses.length === 0) {
+        alert(t('err_select_root_cause') || 'Please select at least one root cause');
+        return;
+    }
+
+    // Get selected nature
+    const selectedNature = document.querySelector('input[name="modalNature"]:checked');
+    if (!selectedNature) {
+        alert(t('err_select_nature') || 'Please select a nature');
+        return;
+    }
+
+    // Update thought
+    thought.rootCauses = selectedRootCauses;
+    thought.classification = selectedNature.value;
+
+    // Save and re-render
+    saveThoughts();
+
+    // Show success feedback
+    const originalText = saveIntrospectionBtn.textContent;
+    saveIntrospectionBtn.textContent = t('msg_saved') || 'Saved!';
+
+    setTimeout(() => {
+        saveIntrospectionBtn.textContent = originalText;
+        closeIntrospectionModal();
+    }, 1000);
+});
+
+// Update event delegation to handle introspect button
+const originalClickHandler = thoughtsList.onclick;
+thoughtsList.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const id = Number(btn.dataset.id);
+
+    if (action === 'introspect') {
+        openIntrospectionModal(id);
+    }
+});
