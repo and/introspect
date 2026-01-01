@@ -1611,6 +1611,11 @@ textarea {
 
     .modal-body {
         padding: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    .modal-actions {
+        padding-bottom: 1rem;
     }
 
     .vote-controls-large {
