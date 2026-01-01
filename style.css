@@ -649,16 +649,16 @@ textarea {
 
 /* Footer */
 .app-footer {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
     border-top: 1px solid var(--surface-border);
     text-align: center;
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
 .app-footer p {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 .app-footer a {

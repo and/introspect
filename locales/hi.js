@@ -75,13 +75,13 @@ translations.hi = {
     "msg_all_deleted": "सभी डेटा हटा दिया गया।",
 
     // Footer
-    "footer_practicing": "अभ्यास",
-    "footer_method_key": "वेदाद्रि महर्षि की आत्मनिरीक्षण विधियां",
+    "footer_guided_by": "Guided by the introspection framework of",
     "footer_source": "सोर्स कोड",
-    "footer_private": "100% निजी:",
-    "footer_private_desc": "आपके विचार आपके डिवाइस को कभी नहीं छोड़ते।",
-    "footer_warning": "आपका डेटा, आपकी जिम्मेदारी:",
-    "footer_warning_desc": "कोई क्लाउड बैकअप नहीं है, इसलिए अपनी अंतर्दृष्टि को सुरक्षित रखना आपकी जिम्मेदारी है। नियमित रूप से बैकअप निर्यात करें।"
+    "footer_private": "अस्वीकरण:",
+    "footer_private_desc": "आपका डेटा आपके डिवाइस पर स्थानीय रूप से सहेजा जाता है।",
+    "footer_warning_desc": "कोई क्लाउड बैकअप नहीं है, इसलिए अपने डेटा को सुरक्षित रखना आपकी जिम्मेदारी है।",
+    "footer_backup_link": "नियमित रूप से बैकअप निर्यात करें।"
 };
 
 window.translations = translations;
+```

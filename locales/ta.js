@@ -76,13 +76,12 @@ translations.ta = {
     "msg_all_deleted": "எல்லா தரவும் நீக்கப்பட்டது.",
 
     // Footer
-    "footer_practicing": "பயிற்சி",
-    "footer_method_key": "வேதாத்திரி மகரிஷியின் தற்சோதனை முறைகள்",
-    "footer_source": "மூலக்குறியீடு",
-    "footer_private": "100% தனிப்பட்டவை:",
-    "footer_private_desc": "உங்கள் எண்ணங்கள் உங்கள் சாதனத்தை விட்டு வெளியேறாது.",
-    "footer_warning": "உங்கள் தரவு, உங்கள் பொறுப்பு:",
-    "footer_warning_desc": "மிக்க நன்றி."
+    "footer_guided_by": "Guided by the introspection framework of",
+    "footer_source": "Source Code", // மூலக்குறியீடு
+    "footer_private": "பொறுப்பு துறப்பு:",
+    "footer_private_desc": "உங்கள் தரವು உங்கள் சாதனத்தில் உள்ளூரில் சேமிக்கப்படுகிறது.",
+    "footer_warning_desc": "No cloud backup means you're responsible for preserving your data.",
+    "footer_backup_link": "Export backups regularly."
 };
 
 window.translations = translations;

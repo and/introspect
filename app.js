@@ -85,10 +85,31 @@ document.addEventListener('DOMContentLoaded', () => {
     deleteConfirmInput.addEventListener('input', validateDeleteInput);
     deleteAllBtn.addEventListener('click', nukeAllData); // "Nuke" for dramatic effect in comments only :)
 
-    // Language Change
     languageSelect.addEventListener('change', (e) => {
         changeLanguage(e.target.value);
     });
+
+    // Footer Backup Link
+    const footerBackupLink = document.getElementById('footerBackupLink');
+    if (footerBackupLink) {
+        footerBackupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            openSettings();
+            // Wait for display:block to apply then scroll
+            setTimeout(() => {
+                const exportSection = document.getElementById('exportSection');
+                if (exportSection) {
+                    exportSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Highlight effect
+                    exportSection.style.transition = 'background-color 0.5s';
+                    exportSection.style.backgroundColor = 'rgba(230, 53, 34, 0.1)';
+                    setTimeout(() => {
+                        exportSection.style.backgroundColor = '';
+                    }, 1500);
+                }
+            }, 50);
+        });
+    }
 
     // Re-render with restored settings
     renderList();

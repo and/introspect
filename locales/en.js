@@ -74,13 +74,12 @@ window.translations.en = {
     "msg_all_deleted": "All data deleted.",
 
     // Footer
-    "footer_practicing": "Practicing",
-    "footer_method_key": "introspection methods", // "Vethathiri Maharishi's introspection methods"
+    "footer_guided_by": "Guided by the introspection framework of",
     "footer_source": "Source Code",
-    "footer_private": "100% Private:",
-    "footer_private_desc": "Your reflections never leave your device.",
-    "footer_warning": "Your Data, Your Care:",
-    "footer_warning_desc": "No cloud backup means you're responsible for preserving your insights. Export backups regularly."
+    "footer_private": "Disclaimer:",
+    "footer_private_desc": "Your data is saved locally on your device.",
+    "footer_warning_desc": "No cloud backup means you're responsible for preserving your data.",
+    "footer_backup_link": "Export backups regularly."
 };
 
 window.translations = translations;

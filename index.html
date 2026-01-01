@@ -81,7 +81,7 @@
                 </div>
 
                 <!-- Export -->
-                <div class="stats-section">
+                <div class="stats-section" id="exportSection">
                     <h3 data-i18n="section_export">Export Data</h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;"
                         data-i18n="desc_export">Copy this code to back up your data or share it via WhatsApp.</p>
@@ -262,21 +262,22 @@
         </div>
 
         <footer class="app-footer">
-            <p>
-                <span data-i18n="footer_practicing">Practicing</span> <strong>Vethathiri Maharishi's</strong> <span
-                    data-i18n="footer_method_key">introspection methods</span>.
-                <span class="separator">•</span>
-                <a href="https://github.com/and/introspect" target="_blank" rel="noopener noreferrer"
-                    data-i18n="footer_source">Source Code</a>
+            <p class="">
+                <span data-i18n="footer_guided_by">Guided by the introspection framework of</span> <a
+                    href="https://www.vethathiri.edu.in" target="_blank" rel="noopener noreferrer"
+                    style="color: inherit; text-decoration: underline;"><strong>Vethathiri Maharishi</strong></a>.
             </p>
             <p class="disclaimer">
-                ✓ <strong data-i18n="footer_private">100% Private:</strong> <span data-i18n="footer_private_desc">Your
+                <strong data-i18n="footer_private">100% Private:</strong> <span data-i18n="footer_private_desc">Your
                     reflections never leave your device.</span>
-                ⚠️ <strong data-i18n="footer_warning">Your Data, Your Care:</strong> <span
-                    data-i18n="footer_warning_desc">No cloud backup means you're responsible for preserving your
-                    insights. Export backups regularly.</span> <a href="https://github.com/and/introspect"
-                    target="_blank" rel="noopener noreferrer" data-i18n="footer_source">Source Code</a>
+                ⚠️ <span data-i18n="footer_warning_desc">No cloud backup means you're responsible for preserving your
+                    insights.</span> <a href="#" id="footerBackupLink"
+                    style="color: var(--text-main); text-decoration: underline; font-weight: 500;"
+                    data-i18n="footer_backup_link">Export backups regularly.</a> <a
+                    href="https://github.com/and/introspect" target="_blank" rel="noopener noreferrer"
+                    data-i18n="footer_source">Source Code</a>
             </p>
+
         </footer>
     </main>
 
