@@ -204,7 +204,6 @@ function nukeAllData() {
     // Confirmation is implied by typing 'delete'
     thoughts = [];
     saveThoughts();
-    // alert(t('msg_all_deleted')); 
     closeSettings();
 }
 
