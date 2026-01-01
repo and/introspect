@@ -622,7 +622,7 @@ thoughtsList.addEventListener('click', (e) => {
     }
 });
 
-// NSFW Content Reveal - Hold mouse to reveal
+// NSFW Content Reveal - Hold mouse/touch to reveal
 thoughtsList.addEventListener('mousedown', (e) => {
     const content = e.target.closest('.thought-content-inline.nsfw-content');
     if (content) {
@@ -631,6 +631,29 @@ thoughtsList.addEventListener('mousedown', (e) => {
 });
 
 thoughtsList.addEventListener('mouseup', (e) => {
+    const content = e.target.closest('.thought-content-inline.nsfw-content');
+    if (content) {
+        content.classList.remove('nsfw-revealed');
+    }
+});
+
+// Touch support for mobile
+thoughtsList.addEventListener('touchstart', (e) => {
+    const content = e.target.closest('.thought-content-inline.nsfw-content');
+    if (content) {
+        content.classList.add('nsfw-revealed');
+        e.preventDefault(); // Prevent scrolling while pressing
+    }
+});
+
+thoughtsList.addEventListener('touchend', (e) => {
+    const content = e.target.closest('.thought-content-inline.nsfw-content');
+    if (content) {
+        content.classList.remove('nsfw-revealed');
+    }
+});
+
+thoughtsList.addEventListener('touchcancel', (e) => {
     const content = e.target.closest('.thought-content-inline.nsfw-content');
     if (content) {
         content.classList.remove('nsfw-revealed');
