@@ -355,6 +355,11 @@ window.editThought = function (id) {
     const radio = document.querySelector(`input[name="nature"][value="${thought.classification}"]`);
     if (radio) radio.checked = true;
 
+    // Reveal the hidden sections
+    rootCauseSection.classList.add('revealed');
+    natureSection.classList.add('revealed');
+    sectionsRevealed = true;
+
     // Change UI to Edit Mode
     const btn = form.querySelector('.btn-primary');
     btn.textContent = t('btn_update_thought');
@@ -491,8 +496,12 @@ function renderList() {
     }
 
     filtered.forEach(thought => {
-        const date = new Date(thought.timestamp).toLocaleDateString(undefined, {
+        const dateObj = new Date(thought.timestamp);
+        const dateWithTime = dateObj.toLocaleDateString(undefined, {
             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        const dateOnly = dateObj.toLocaleDateString(undefined, {
+            month: 'short', day: 'numeric'
         });
 
         const el = document.createElement('div');
@@ -513,34 +522,35 @@ function renderList() {
 
         // Handle both old (string) and new (array) formats for backward compatibility
         const rootCausesArray = Array.isArray(thought.rootCauses) ? thought.rootCauses : (thought.rootCause ? [thought.rootCause] : []);
-        const rootCauseTags = rootCausesArray.filter(rc => rc).map(rc => `<span class="thought-cause-tag">${escapeHtml(rc)}</span>`).join('');
+
+        // Check if mobile (screen width < 850px)
+        const isMobile = window.innerWidth < 850;
+
+        const rootCauseTags = rootCausesArray.filter(rc => rc).map(rc => {
+            const displayText = isMobile ? rc.charAt(0) : rc;
+            return `<span class="thought-cause-tag" title="${escapeHtml(rc)}">${escapeHtml(displayText)}</span>`;
+        }).join('');
 
         el.innerHTML = `
-            <div class="thought-meta">
-                <div class="thought-causes-container">${rootCauseTags}</div>
-                <div style="display:flex; align-items:center; gap:0.5rem;">
-                    <span>${date}</span>
-                    <button class="introspect-btn" data-action="introspect" data-id="${thought.id}" title="Introspect">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"></path></svg>
+            <div class="thought-row-compact">
+                <button class="introspect-btn-compact introspect-btn-leading" data-action="introspect" data-id="${thought.id}" title="Introspect">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"></path></svg>
+                </button>
+                <div class="thought-content-inline" title="Click to reveal/hide in privacy mode">${escapeHtml(thought.content)}</div>
+                ${rootCauseTags ? `<div class="thought-tags-container">${rootCauseTags}</div>` : ''}
+                ${thought.classification ? `<div class="thought-nature-inline">${icon}</div>` : ''}
+                <span class="thought-date-compact thought-date-desktop">${dateWithTime}</span>
+                <span class="thought-date-compact thought-date-mobile">${dateOnly}</span>
+                <div class="thought-actions-compact">
+                    <button class="edit-btn-compact" data-action="edit" data-id="${thought.id}" title="Edit">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                     </button>
-                    <button class="edit-btn" data-action="edit" data-id="${thought.id}" title="Edit">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <button class="delete-btn-compact" data-action="delete" data-id="${thought.id}" title="Delete">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                     </button>
-                    <button class="delete-btn" data-action="delete" data-id="${thought.id}" title="Delete">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    <button class="vote-quick-btn" data-action="upvote" data-id="${thought.id}" title="Upvote">
+                        <span class="vote-quick-count">${score}</span>
                     </button>
-                </div>
-            </div>
-            <div class="thought-content" title="Click to reveal/hide in privacy mode">${escapeHtml(thought.content)}</div>
-            <div class="thought-actions">
-                <div style="display:flex; align-items:center; gap:0.5rem; margin-right:auto;">
-                    ${thought.classification ? `${icon} <span>${thought.classification}</span>` : ''}
-                </div>
-
-                <div class="vote-controls">
-                    <button class="vote-btn" data-action="upvote" data-id="${thought.id}" title="Recurs">▲</button>
-                    <span class="vote-count">${score}</span>
-                    <button class="vote-btn" data-action="downvote" data-id="${thought.id}" title="Less">▼</button>
                 </div>
             </div>
         `;
@@ -551,7 +561,7 @@ function renderList() {
 // Event Delegation for List Actions
 thoughtsList.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
-    const content = e.target.closest('.thought-content');
+    const content = e.target.closest('.thought-content-inline');
 
     // Handle Privacy Reveal
     if (content && document.body.classList.contains('privacy-mode')) {
@@ -569,9 +579,6 @@ thoughtsList.addEventListener('click', (e) => {
     }
     else if (action === 'upvote') {
         updateScore(id, 1);
-    }
-    else if (action === 'downvote') {
-        updateScore(id, -1);
     }
     else if (action === 'delete') {
         // Custom Confirmation Logic
@@ -839,7 +846,6 @@ const modalThoughtContent = document.getElementById('modalThoughtContent');
 const modalThoughtMeta = document.getElementById('modalThoughtMeta');
 const modalScore = document.getElementById('modalScore');
 const modalUpvoteBtn = document.getElementById('modalUpvote');
-const modalDownvoteBtn = document.getElementById('modalDownvote');
 const modalCommentsList = document.getElementById('modalCommentsList');
 const modalCommentInput = document.getElementById('modalCommentInput');
 const modalAddCommentBtn = document.getElementById('modalAddComment');
@@ -929,15 +935,6 @@ modalUpvoteBtn.addEventListener('click', () => {
     const thought = thoughts.find(t => t.id === introspectionThoughtId);
     if (thought) {
         thought.score = (thought.score || 0) + 1;
-        modalScore.textContent = thought.score;
-    }
-});
-
-modalDownvoteBtn.addEventListener('click', () => {
-    if (!introspectionThoughtId) return;
-    const thought = thoughts.find(t => t.id === introspectionThoughtId);
-    if (thought) {
-        thought.score = (thought.score || 0) - 1;
         modalScore.textContent = thought.score;
     }
 });
