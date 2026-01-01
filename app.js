@@ -609,12 +609,7 @@ function renderStats() {
     const patternsPanel = document.getElementById('patternsPanel');
 
     if (thoughts.length === 0) {
-        const emptyHtml = `<p class="empty-state-text" style="color:var(--text-muted); text-align:center;" data-i18n="empty_log_to_see">${t('empty_log_to_see')}</p>`;
-        rootContainer.innerHTML = emptyHtml;
-        natureContainer.innerHTML = emptyHtml;
-        rootSection.style.display = 'block';
-        natureSection.style.display = 'block';
-        patternsPanel.style.display = 'flex';
+        patternsPanel.style.display = 'none';
         return;
     }
 
