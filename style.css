@@ -197,6 +197,55 @@ textarea {
     resize: vertical;
 }
 
+/* Field Hint */
+.field-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: -0.25rem;
+    margin-bottom: 0.75rem;
+    font-weight: 400;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface-color);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-main);
+}
+
+.checkbox-item:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin: 0;
+    accent-color: var(--primary-color);
+}
+
+.checkbox-item input[type="checkbox"]:checked + span {
+    font-weight: 600;
+}
+
 /* Radio Cards - Minimal Tabs */
 .radio-group {
     display: flex;
@@ -444,6 +493,13 @@ textarea {
     align-items: center;
 }
 
+.thought-causes-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-items: center;
+}
+
 .thought-cause-tag {
     background: #F2F4F7;
     color: var(--text-main);
@@ -453,6 +509,7 @@ textarea {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    white-space: nowrap;
 }
 
 .thought-content {
@@ -651,6 +708,10 @@ textarea {
 
     .app-header h1 {
         font-size: 1.25rem;
+    }
+
+    .checkbox-group {
+        grid-template-columns: 1fr;
     }
 }
 

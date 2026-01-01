@@ -248,7 +248,17 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const content = document.getElementById('thoughtContent').value;
-    const rootCause = document.getElementById('rootCause').value;
+
+    // Get all checked root causes
+    const rootCauseCheckboxes = document.querySelectorAll('input[name="rootCause"]:checked');
+    const rootCauses = Array.from(rootCauseCheckboxes).map(cb => cb.value);
+
+    // Validate at least one root cause is selected
+    if (rootCauses.length === 0) {
+        alert(t('err_select_root_cause') || 'Please select at least one root cause');
+        return;
+    }
+
     const nature = document.querySelector('input[name="nature"]:checked').value;
 
     if (editingId) {
@@ -258,9 +268,9 @@ form.addEventListener('submit', (e) => {
             thoughts[index] = {
                 ...thoughts[index],
                 content,
-                rootCause,
+                rootCauses,
                 classification: nature,
-                // keep original timestamp or update? Keeping original usually better for history, 
+                // keep original timestamp or update? Keeping original usually better for history,
                 // but maybe we want an 'updatedAt'. For simplicity, keeping original.
             };
         }
@@ -271,7 +281,7 @@ form.addEventListener('submit', (e) => {
         const newThought = {
             id: Date.now(),
             content,
-            rootCause,
+            rootCauses,
             classification: nature,
             score: 0, // Initialize score
             timestamp: new Date().toISOString()
@@ -303,7 +313,18 @@ window.editThought = function (id) {
 
     // Populate form
     document.getElementById('thoughtContent').value = thought.content;
-    document.getElementById('rootCause').value = thought.rootCause;
+
+    // Handle both old (string) and new (array) formats for backward compatibility
+    const rootCausesToSelect = Array.isArray(thought.rootCauses) ? thought.rootCauses : [thought.rootCause];
+
+    // Uncheck all root cause checkboxes first
+    document.querySelectorAll('input[name="rootCause"]').forEach(cb => cb.checked = false);
+
+    // Check the appropriate root cause checkboxes
+    rootCausesToSelect.forEach(rc => {
+        const checkbox = document.querySelector(`input[name="rootCause"][value="${rc}"]`);
+        if (checkbox) checkbox.checked = true;
+    });
 
     const radio = document.querySelector(`input[name="nature"][value="${thought.classification}"]`);
     if (radio) radio.checked = true;
@@ -404,11 +425,15 @@ function renderList() {
 
     // Filter
     const query = searchInput.value.toLowerCase();
-    let filtered = thoughts.filter(t =>
-        t.content.toLowerCase().includes(query) ||
-        t.rootCause.toLowerCase().includes(query) ||
-        t.classification.toLowerCase().includes(query)
-    );
+    let filtered = thoughts.filter(t => {
+        // Handle both old (string) and new (array) formats
+        const rootCausesArray = Array.isArray(t.rootCauses) ? t.rootCauses : [t.rootCause];
+        const rootCauseMatch = rootCausesArray.some(rc => rc && rc.toLowerCase().includes(query));
+
+        return t.content.toLowerCase().includes(query) ||
+            rootCauseMatch ||
+            t.classification.toLowerCase().includes(query);
+    });
 
     // Sort
     const sortMode = sortSelect.value;
@@ -460,9 +485,13 @@ function renderList() {
         // Default score to 0 if not present
         const score = thought.score || 0;
 
+        // Handle both old (string) and new (array) formats for backward compatibility
+        const rootCausesArray = Array.isArray(thought.rootCauses) ? thought.rootCauses : [thought.rootCause];
+        const rootCauseTags = rootCausesArray.map(rc => `<span class="thought-cause-tag">${escapeHtml(rc)}</span>`).join('');
+
         el.innerHTML = `
             <div class="thought-meta">
-                <span class="thought-cause-tag">${thought.rootCause}</span>
+                <div class="thought-causes-container">${rootCauseTags}</div>
                 <div style="display:flex; align-items:center; gap:0.5rem;">
                     <span>${date}</span>
                     <button class="edit-btn" data-action="edit" data-id="${thought.id}" title="Edit">
@@ -478,7 +507,7 @@ function renderList() {
                 <div style="display:flex; align-items:center; gap:0.5rem; margin-right:auto;">
                     ${icon} <span>${thought.classification}</span>
                 </div>
-                
+
                 <div class="vote-controls">
                     <button class="vote-btn" data-action="upvote" data-id="${thought.id}" title="Recurs">▲</button>
                     <span class="vote-count">${score}</span>
@@ -556,7 +585,13 @@ function renderStats() {
 
     // 1. Root Cause Distribution (Treemap)
     const rootCounts = {};
-    thoughts.forEach(t => { rootCounts[t.rootCause] = (rootCounts[t.rootCause] || 0) + 1; });
+    thoughts.forEach(t => {
+        // Handle both old (string) and new (array) formats
+        const rootCausesArray = Array.isArray(t.rootCauses) ? t.rootCauses : [t.rootCause];
+        rootCausesArray.forEach(rc => {
+            if (rc) rootCounts[rc] = (rootCounts[rc] || 0) + 1;
+        });
+    });
     renderTreemap(rootContainer, rootCounts, thoughts.length);
 
     // 2. Nature Distribution (Bar Chart)

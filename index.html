@@ -142,20 +142,38 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="rootCause" data-i18n="label_root_cause">Root Cause</label>
-                            <select id="rootCause" required>
-                                <option value="" disabled selected data-i18n="option_select_origin">Select Origin
-                                </option>
-                                <option value="Needs" data-i18n="option_needs">Needs</option>
-                                <option value="Habits" data-i18n="option_habits">Habits</option>
-                                <option value="Environmental conditions" data-i18n="option_environment">Environment
-                                </option>
-                                <option value="Others impositions" data-i18n="option_others_impositions">Others
-                                    Impositions</option>
-                                <option value="Heredity" data-i18n="option_heredity">Heredity</option>
-                                <option value="Divinity" data-i18n="option_divinity">Divinity</option>
-                                <option value="Unknown" data-i18n="option_unknown">Unknown</option>
-                            </select>
+                            <label data-i18n="label_root_cause">Root Cause</label>
+                            <p class="field-hint" data-i18n="hint_select_multiple">Select one or more origins</p>
+                            <div class="checkbox-group" id="rootCauseGroup">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="rootCause" value="Needs">
+                                    <span data-i18n="option_needs">Needs</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="rootCause" value="Habits">
+                                    <span data-i18n="option_habits">Habits</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="rootCause" value="Environmental conditions">
+                                    <span data-i18n="option_environment">Environment</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="rootCause" value="Others impositions">
+                                    <span data-i18n="option_others_impositions">Others Impositions</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="rootCause" value="Heredity">
+                                    <span data-i18n="option_heredity">Heredity</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="rootCause" value="Divinity">
+                                    <span data-i18n="option_divinity">Divinity</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="rootCause" value="Unknown">
+                                    <span data-i18n="option_unknown">Unknown</span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="form-group">
