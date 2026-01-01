@@ -20,9 +20,18 @@ A privacy-focused, minimalist web application for practicing the introspection f
 - **Privacy Toggle (Eye Icon)**: Instantly blur all thought content for privacy when in public spaces.
 - **Click-to-Reveal**: In privacy mode, click any blurred thought to temporarily reveal it.
 
+### 🌐 Internationalization (i18n)
+- **Multi-language Support**: Fully localized in **English, Hindi, Tamil, Malayalam, Telugu, and Kannada**.
+- **Instant Switching**: Change languages instantly from the settings panel without reloading.
+
+### 💾 Data Management
+- **Export & Backup**: Export your entire thought history as a JSON code to back it up or transfer it.
+- **Import/Restore**: Easily restore your data by pasting your backup code.
+- **Privacy First**: The "Export backups regularly" feature ensures you stay in control of your data since there is no cloud storage.
+
 ### ♿ Accessibility & Customization
 - **Font Size Controls**: Adjust the text size (A+/A-) for comfortable reading.
-- **Persistent Settings**: The app remembers your privacy mode, sort preference, and font size settings.
+- **Persistent Settings**: The app remembers your language, privacy mode, sort preference, and font size settings.
 - **Minimal Aesthetic**: A "Databricks-inspired" clean design with a curated Slate scale color palette.
 
 ## 🚀 Getting Started
