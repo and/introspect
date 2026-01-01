@@ -353,6 +353,32 @@ textarea {
     box-shadow: none;
 }
 
+.btn-secondary {
+    width: 100%;
+    padding: 0.875rem;
+    margin-top: 0.25rem;
+    background: var(--surface-color);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--surface-hover);
+    border-color: var(--text-muted);
+}
+
+.comment-input-area .btn-secondary {
+    align-self: flex-end;
+    width: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
 .btn-text .btn-shine {
     display: none;
 }
@@ -867,7 +893,7 @@ textarea {
 }
 
 .introspect-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .introspect-section:last-child {
@@ -876,8 +902,8 @@ textarea {
 
 .introspect-section label {
     display: block;
-    margin-bottom: 0.75rem;
-    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-main);
     text-transform: uppercase;
@@ -1009,12 +1035,264 @@ textarea {
 }
 
 .modal-actions {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--surface-border);
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
+}
+
+/* Compact Checkbox Group for Modal */
+.checkbox-group-compact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.checkbox-item-compact {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem;
+    background: var(--surface-color);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.checkbox-item-compact:hover {
+    background: var(--surface-hover);
+    border-color: var(--text-muted);
+}
+
+.checkbox-item-compact input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+.checkbox-item-compact input[type="checkbox"]:checked + span {
+    font-weight: 600;
+}
+
+.checkbox-item-compact input[type="checkbox"]:checked {
+    accent-color: var(--primary-color);
+}
+
+/* Compact Radio Group for Modal */
+.radio-group-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.radio-card-compact {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface-color);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.radio-card-compact input[type="radio"] {
+    display: none;
+}
+
+.radio-content-compact {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+}
+
+.radio-card-compact:hover {
+    background: var(--surface-hover);
+}
+
+.radio-card-compact input[type="radio"]:checked + .radio-content-compact {
+    font-weight: 600;
+}
+
+.radio-card-compact.good input[type="radio"]:checked ~ .radio-content-compact,
+.radio-card-compact.good:has(input[type="radio"]:checked) {
+    background: rgba(22, 163, 74, 0.1);
+    border-color: #16a34a;
+}
+
+.radio-card-compact.harmful input[type="radio"]:checked ~ .radio-content-compact,
+.radio-card-compact.harmful:has(input[type="radio"]:checked) {
+    background: rgba(230, 53, 34, 0.1);
+    border-color: var(--primary-color);
+}
+
+.radio-card-compact.unsure input[type="radio"]:checked ~ .radio-content-compact,
+.radio-card-compact.unsure:has(input[type="radio"]:checked) {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: #f59e0b;
+}
+
+/* Compact Vote Controls for Modal */
+.vote-controls-compact {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--surface-hover);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    justify-content: center;
+    margin-top: 0.25rem;
+}
+
+.vote-btn-compact {
+    background: var(--surface-color);
+    border: 1px solid var(--surface-border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.vote-btn-compact:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background: var(--surface-color);
+}
+
+.vote-count-compact {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    min-width: 2.5ch;
+    text-align: center;
+}
+
+/* Inline Nature & Recurrence - Single Line */
+.nature-recurrence-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nature-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.nature-inline label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.recurrence-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.recurrence-inline label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.radio-group-inline {
+    display: flex;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.radio-card-inline {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.65rem;
+    background: var(--surface-color);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.radio-card-inline input[type="radio"] {
+    display: none;
+}
+
+.radio-content-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.radio-card-inline:hover {
+    background: var(--surface-hover);
+}
+
+.radio-card-inline input[type="radio"]:checked + .radio-content-inline {
+    font-weight: 600;
+}
+
+.radio-card-inline.good:has(input[type="radio"]:checked) {
+    background: rgba(22, 163, 74, 0.1);
+    border-color: #16a34a;
+}
+
+.radio-card-inline.harmful:has(input[type="radio"]:checked) {
+    background: rgba(230, 53, 34, 0.1);
+    border-color: var(--primary-color);
+}
+
+.radio-card-inline.unsure:has(input[type="radio"]:checked) {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: #f59e0b;
+}
+
+/* Inline Vote Controls - Smaller */
+.vote-controls-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vote-btn-inline {
+    background: var(--surface-color);
+    border: 1px solid var(--surface-border);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.vote-btn-inline:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background: var(--surface-color);
+}
+
+.vote-count-inline {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    min-width: 2ch;
+    text-align: center;
 }
 
 /* Mobile Modal */

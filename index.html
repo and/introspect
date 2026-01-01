@@ -320,89 +320,92 @@
                     <div id="modalThoughtMeta" class="introspect-meta"></div>
                 </div>
 
-                <!-- Root Causes - Editable -->
+                <!-- Root Causes - Compact -->
                 <div class="introspect-section">
                     <label data-i18n="label_root_cause">Root Cause</label>
-                    <div class="checkbox-group" id="modalRootCauseGroup">
-                        <label class="checkbox-item">
+                    <div class="checkbox-group-compact" id="modalRootCauseGroup">
+                        <label class="checkbox-item-compact">
                             <input type="checkbox" name="modalRootCause" value="Needs">
                             <span data-i18n="option_needs">Needs</span>
                         </label>
-                        <label class="checkbox-item">
+                        <label class="checkbox-item-compact">
                             <input type="checkbox" name="modalRootCause" value="Habits">
                             <span data-i18n="option_habits">Habits</span>
                         </label>
-                        <label class="checkbox-item">
+                        <label class="checkbox-item-compact">
                             <input type="checkbox" name="modalRootCause" value="Environmental conditions">
                             <span data-i18n="option_environment">Environment</span>
                         </label>
-                        <label class="checkbox-item">
+                        <label class="checkbox-item-compact">
                             <input type="checkbox" name="modalRootCause" value="Others impositions">
                             <span data-i18n="option_others_impositions">Others Impositions</span>
                         </label>
-                        <label class="checkbox-item">
+                        <label class="checkbox-item-compact">
                             <input type="checkbox" name="modalRootCause" value="Heredity">
                             <span data-i18n="option_heredity">Heredity</span>
                         </label>
-                        <label class="checkbox-item">
+                        <label class="checkbox-item-compact">
                             <input type="checkbox" name="modalRootCause" value="Divinity">
                             <span data-i18n="option_divinity">Divinity</span>
                         </label>
-                        <label class="checkbox-item">
+                        <label class="checkbox-item-compact">
                             <input type="checkbox" name="modalRootCause" value="Unknown">
                             <span data-i18n="option_unknown">Unknown</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Nature - Editable -->
+                <!-- Nature & Recurrence - Single Line -->
                 <div class="introspect-section">
-                    <label data-i18n="label_nature">Nature</label>
-                    <div class="radio-group">
-                        <label class="radio-card good">
-                            <input type="radio" name="modalNature" value="Good">
-                            <span class="radio-content">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                                </svg>
-                                <span data-i18n="nature_good">Good</span>
-                            </span>
-                        </label>
-                        <label class="radio-card harmful">
-                            <input type="radio" name="modalNature" value="Harmful">
-                            <span class="radio-content">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                </svg>
-                                <span data-i18n="nature_harmful">Harmful</span>
-                            </span>
-                        </label>
-                        <label class="radio-card unsure">
-                            <input type="radio" name="modalNature" value="Unsure">
-                            <span class="radio-content">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                </svg>
-                                <span data-i18n="nature_unsure">Unsure</span>
-                            </span>
-                        </label>
-                    </div>
-                </div>
+                    <div class="nature-recurrence-row">
+                        <div class="nature-inline">
+                            <label data-i18n="label_nature">Nature</label>
+                            <div class="radio-group-inline">
+                                <label class="radio-card-inline good">
+                                    <input type="radio" name="modalNature" value="Good">
+                                    <span class="radio-content-inline">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                        </svg>
+                                        <span data-i18n="nature_good">Good</span>
+                                    </span>
+                                </label>
+                                <label class="radio-card-inline harmful">
+                                    <input type="radio" name="modalNature" value="Harmful">
+                                    <span class="radio-content-inline">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                        <span data-i18n="nature_harmful">Harmful</span>
+                                    </span>
+                                </label>
+                                <label class="radio-card-inline unsure">
+                                    <input type="radio" name="modalNature" value="Unsure">
+                                    <span class="radio-content-inline">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>
+                                        <span data-i18n="nature_unsure">Unsure</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
 
-                <!-- Recurrence Score -->
-                <div class="introspect-section">
-                    <label data-i18n="label_recurrence">Recurrence</label>
-                    <div class="vote-controls-large">
-                        <button class="vote-btn-large" id="modalDownvote" title="Less recurring">▼</button>
-                        <span class="vote-count-large" id="modalScore">0</span>
-                        <button class="vote-btn-large" id="modalUpvote" title="More recurring">▲</button>
+                        <div class="recurrence-inline">
+                            <label data-i18n="label_recurrence">Recurrence</label>
+                            <div class="vote-controls-inline">
+                                <button class="vote-btn-inline" id="modalDownvote" title="Less recurring">▼</button>
+                                <span class="vote-count-inline" id="modalScore">0</span>
+                                <button class="vote-btn-inline" id="modalUpvote" title="More recurring">▲</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -412,8 +415,8 @@
                     <div id="modalCommentsList" class="comments-list"></div>
 
                     <div class="comment-input-area">
-                        <textarea id="modalCommentInput" data-i18n-placeholder="placeholder_add_comment" placeholder="Add a comment..." rows="3"></textarea>
-                        <button class="btn-primary" id="modalAddComment" data-i18n="btn_add_comment">Add Comment</button>
+                        <textarea id="modalCommentInput" data-i18n-placeholder="placeholder_add_comment" placeholder="Add a comment..." rows="2"></textarea>
+                        <button class="btn-secondary" id="modalAddComment" data-i18n="btn_add_comment">Add Comment</button>
                     </div>
                 </div>
 
