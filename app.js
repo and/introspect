@@ -853,10 +853,21 @@ introspectionModal.addEventListener('click', (e) => {
     }
 });
 
-// Close modal on Escape key
+// Escape key handler
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && introspectionModal.style.display === 'block') {
-        closeIntrospectionModal();
+    if (e.key === 'Escape') {
+        // If modal is open, close it
+        if (introspectionModal.style.display === 'block') {
+            closeIntrospectionModal();
+        }
+        // If settings panel is open, close it
+        else if (settingsPanel.style.display === 'block') {
+            closeSettings();
+        }
+        // Otherwise, toggle privacy mode
+        else {
+            togglePrivacy();
+        }
     }
 });
 
