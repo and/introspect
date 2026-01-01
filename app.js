@@ -159,6 +159,8 @@ function closeSettings() {
     // Reset danger zone
     deleteConfirmInput.value = '';
     validateDeleteInput();
+    // Scroll to top on mobile to ensure full page is visible
+    window.scrollTo(0, 0);
 }
 
 function copyDataToClipboard() {
