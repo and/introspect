@@ -44,10 +44,9 @@ body {
     font-family: var(--font-family);
     background-color: var(--bg-color);
     color: var(--text-main);
-    height: 100vh;
+    min-height: 100vh;
     padding: 0;
-    overflow: hidden;
-    /* Desktop fixed layout */
+    /* Allow scrolling */
     line-height: 1.5;
 }
 
@@ -59,11 +58,11 @@ body {
 /* Layout */
 .app-container {
     max-width: 1400px;
-    height: 100%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     padding: 1.5rem 2rem;
+    min-height: 100vh;
 }
 
 .app-header {
@@ -140,7 +139,6 @@ body.privacy-mode .thought-content.revealed {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    overflow-y: auto;
     padding-right: 0;
 }
 
@@ -303,8 +301,7 @@ textarea {
 /* Right Column: History */
 .history-panel {
     /* Flex column set in group selector above */
-    overflow: hidden;
-    /* Contain list */
+    /* overflow: hidden; Removed for scrolling */
 }
 
 .history-header {
@@ -387,7 +384,7 @@ textarea {
 
 .thoughts-list {
     flex: 1;
-    overflow-y: auto;
+    /* overflow-y: auto; Removed for scrolling */
     padding-right: 0.5rem;
     display: flex;
     flex-direction: column;
@@ -648,4 +645,39 @@ textarea {
     .app-header h1 {
         font-size: 1.25rem;
     }
+}
+
+/* Footer */
+.app-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--surface-border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.app-footer p {
+    margin-bottom: 0.5rem;
+}
+
+.app-footer a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.app-footer a:hover {
+    text-decoration: underline;
+    color: var(--primary-color);
+}
+
+.app-footer .separator {
+    margin: 0 0.5rem;
+    color: var(--surface-border);
+}
+
+.app-footer .disclaimer {
+    font-size: 0.75rem;
+    opacity: 0.8;
 }
