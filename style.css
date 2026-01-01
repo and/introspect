@@ -318,10 +318,15 @@ textarea {
     display: grid;
     place-items: center;
     transition: background-color 0.2s, color 0.2s;
+    color: var(--text-muted);
 }
 
 .btn-icon:hover {
     background-color: rgba(0, 0, 0, 0.05);
+    color: var(--text-main);
+}
+
+.btn-icon.privacy-active {
     color: var(--text-main);
 }
 
