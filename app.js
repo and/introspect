@@ -247,6 +247,7 @@ function saveThoughts() {
 const thoughtContentInput = document.getElementById('thoughtContent');
 const rootCauseSection = document.getElementById('rootCauseSection');
 const natureSection = document.getElementById('natureSection');
+const nsfwSection = document.getElementById('nsfwSection');
 
 let sectionsRevealed = false;
 
@@ -259,11 +260,15 @@ thoughtContentInput.addEventListener('input', () => {
         setTimeout(() => {
             natureSection.classList.add('revealed');
         }, 300);
+        setTimeout(() => {
+            nsfwSection.classList.add('revealed');
+        }, 500);
         sectionsRevealed = true;
     } else if (sectionsRevealed && thoughtContentInput.value.trim().length === 0) {
         // Hide sections if content is cleared
         rootCauseSection.classList.remove('revealed');
         natureSection.classList.remove('revealed');
+        nsfwSection.classList.remove('revealed');
         sectionsRevealed = false;
     }
 });
@@ -282,6 +287,9 @@ form.addEventListener('submit', (e) => {
     const natureRadio = document.querySelector('input[name="nature"]:checked');
     const nature = natureRadio ? natureRadio.value : null;
 
+    // Get NSFW status
+    const nsfw = document.getElementById('nsfwToggle').checked;
+
     if (editingId) {
         // Update existing thought
         const index = thoughts.findIndex(t => t.id === editingId);
@@ -291,6 +299,7 @@ form.addEventListener('submit', (e) => {
                 content,
                 rootCauses,
                 classification: nature,
+                nsfw,
                 // keep original timestamp or update? Keeping original usually better for history,
                 // but maybe we want an 'updatedAt'. For simplicity, keeping original.
             };
@@ -304,6 +313,7 @@ form.addEventListener('submit', (e) => {
             content,
             rootCauses,
             classification: nature,
+            nsfw,
             score: 0, // Initialize score
             timestamp: new Date().toISOString()
         };
@@ -316,6 +326,7 @@ form.addEventListener('submit', (e) => {
     // Hide the sections again after form reset
     rootCauseSection.classList.remove('revealed');
     natureSection.classList.remove('revealed');
+    nsfwSection.classList.remove('revealed');
     sectionsRevealed = false;
 
     // Feedback
@@ -355,9 +366,13 @@ window.editThought = function (id) {
     const radio = document.querySelector(`input[name="nature"][value="${thought.classification}"]`);
     if (radio) radio.checked = true;
 
+    // Set NSFW checkbox
+    document.getElementById('nsfwToggle').checked = thought.nsfw || false;
+
     // Reveal the hidden sections
     rootCauseSection.classList.add('revealed');
     natureSection.classList.add('revealed');
+    nsfwSection.classList.add('revealed');
     sectionsRevealed = true;
 
     // Change UI to Edit Mode
@@ -536,7 +551,7 @@ function renderList() {
                 <button class="introspect-btn-compact introspect-btn-leading" data-action="introspect" data-id="${thought.id}" title="Introspect">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"></path></svg>
                 </button>
-                <div class="thought-content-inline" title="Click to reveal/hide in privacy mode">${escapeHtml(thought.content)}</div>
+                <div class="thought-content-inline ${thought.nsfw ? 'nsfw-content' : ''}" title="${thought.nsfw ? 'Hold to reveal NSFW content' : 'Click to reveal/hide in privacy mode'}">${escapeHtml(thought.content)}</div>
                 ${rootCauseTags ? `<div class="thought-tags-container">${rootCauseTags}</div>` : ''}
                 ${thought.classification ? `<div class="thought-nature-inline">${icon}</div>` : ''}
                 <span class="thought-date-compact thought-date-desktop">${dateWithTime}</span>
@@ -605,6 +620,27 @@ thoughtsList.addEventListener('click', (e) => {
             }, 8000); // Extended to 8 seconds
         }
     }
+});
+
+// NSFW Content Reveal - Hold mouse to reveal
+thoughtsList.addEventListener('mousedown', (e) => {
+    const content = e.target.closest('.thought-content-inline.nsfw-content');
+    if (content) {
+        content.classList.add('nsfw-revealed');
+    }
+});
+
+thoughtsList.addEventListener('mouseup', (e) => {
+    const content = e.target.closest('.thought-content-inline.nsfw-content');
+    if (content) {
+        content.classList.remove('nsfw-revealed');
+    }
+});
+
+// Also hide when mouse leaves while holding
+thoughtsList.addEventListener('mouseleave', (e) => {
+    const nsfwContents = thoughtsList.querySelectorAll('.nsfw-content.nsfw-revealed');
+    nsfwContents.forEach(content => content.classList.remove('nsfw-revealed'));
 });
 
 // Render Statistics
