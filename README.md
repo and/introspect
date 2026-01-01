@@ -2,6 +2,8 @@
 
 A privacy-focused, minimalist web application for practicing the introspection framework taught by Vethathiri Maharishi. This tool provides a structured space to systematically examine your thoughts, trace them to their root causes, and cultivate mental clarity through guided self-reflection.
 
+[**🚀 Live Demo**](https://and.github.io/introspect/)
+
 ## ✨ Key Features
 
 ### 🧠 Thought Tracking
