@@ -39,10 +39,78 @@
                         <circle cx="12" cy="12" r="3"></circle>
                     </svg>
                 </button>
+                <div style="width: 1px; height: 1.5rem; background: var(--surface-border); margin: 0 0.5rem;"></div>
+                <button id="settingsToggle" class="btn-icon" title="Settings" style="color:var(--text-muted);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
+                </button>
             </div>
         </header>
 
-        <div class="main-grid">
+        <!-- Settings Panel (Hidden by default) -->
+        <div id="settingsPanel" style="display: none;">
+            <button id="backToHome" class="btn-text"
+                style="margin-bottom: 1rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; background: none; border: none; cursor: pointer; font-family: inherit; font-size: 0.9rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Dashboard
+            </button>
+
+            <div class="glass-panel" style="max-width: 600px; margin: 0 auto; width: 100%;">
+                <h2>Data Management</h2>
+
+                <!-- Export -->
+                <div class="stats-section">
+                    <h3>Export Data</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Copy this code to
+                        back up your data or share it via WhatsApp.</p>
+                    <textarea id="exportArea" readonly
+                        style="height: 100px; font-family: monospace; font-size: 0.8rem; margin-bottom: 0.5rem; white-space: pre-wrap; word-break: break-all;"></textarea>
+                    <button id="copyBtn" class="btn-primary" style="margin-top: 0;">Copy to Clipboard</button>
+                    <p id="copyFeedback"
+                        style="font-size: 0.8rem; color: var(--success-text); margin-top: 0.5rem; display: none;">
+                        Copied!</p>
+                </div>
+
+                <!-- Import -->
+                <div class="stats-section" style="margin-top: 2rem;">
+                    <h3>Import Data</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Paste your backup
+                        code here to restore your thoughts.</p>
+                    <textarea id="importArea" placeholder="Paste data here..."
+                        style="height: 100px; font-family: monospace; font-size: 0.8rem; margin-bottom: 0.5rem;"></textarea>
+                    <button id="importBtn" class="btn-primary"
+                        style="margin-top: 0; background: var(--text-main);">Import Data</button>
+                </div>
+
+                <!-- Delete -->
+                <div class="stats-section"
+                    style="margin-top: 3rem; border-top: 1px solid var(--surface-border); padding-top: 1.5rem;">
+                    <h3 style="color: var(--danger-text);">Danger Zone</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Permanently delete all
+                        your thoughts. This action cannot be undone.</p>
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <input type="text" id="deleteConfirmInput" placeholder="Type 'DELETE' to confirm"
+                            style="flex: 1; border-color: var(--danger-bg); color: var(--danger-text);">
+                        <button id="deleteAllBtn" disabled class="btn-primary"
+                            style="margin-top: 0; background: var(--danger-text); opacity: 0.5; cursor: not-allowed; width: auto;">
+                            Delete Everything
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mainDashboard" class="main-grid">
             <!-- Left Column: Input and Stats -->
             <div class="left-column">
                 <section class="thought-input-card glass-panel">
@@ -169,7 +237,8 @@
             <p class="disclaimer">
                 ✓ <strong>100% Private:</strong> Your reflections never leave your device.
                 ⚠️ <strong>Your Data, Your Care:</strong> No cloud backup means you're responsible for preserving your
-                insights. <a href="https://github.com/and/introspect" target="_blank" rel="noopener noreferrer">Source
+                insights. Export backups regularly. <a href="https://github.com/and/introspect" target="_blank"
+                    rel="noopener noreferrer">Source
                     Code</a>
             </p>
         </footer>

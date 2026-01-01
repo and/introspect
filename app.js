@@ -12,6 +12,19 @@ const privacyToggleBtn = document.getElementById('privacyToggle');
 const fontIncreaseBtn = document.getElementById('fontIncrease');
 const fontDecreaseBtn = document.getElementById('fontDecrease');
 
+// Settings Elements
+const settingsToggleBtn = document.getElementById('settingsToggle');
+const settingsPanel = document.getElementById('settingsPanel');
+const mainDashboard = document.getElementById('mainDashboard');
+const backToHomeBtn = document.getElementById('backToHome');
+const exportArea = document.getElementById('exportArea');
+const copyBtn = document.getElementById('copyBtn');
+const importArea = document.getElementById('importArea');
+const importBtn = document.getElementById('importBtn');
+const deleteConfirmInput = document.getElementById('deleteConfirmInput');
+const deleteAllBtn = document.getElementById('deleteAllBtn');
+const copyFeedback = document.getElementById('copyFeedback');
+
 // State
 let thoughts = [];
 let editingId = null;
@@ -52,9 +65,83 @@ document.addEventListener('DOMContentLoaded', () => {
         applyFontSize();
     }
 
+    // Settings Navigation
+    settingsToggleBtn.addEventListener('click', openSettings);
+    backToHomeBtn.addEventListener('click', closeSettings);
+
+    // Data Management
+    copyBtn.addEventListener('click', copyDataToClipboard);
+    importBtn.addEventListener('click', importData);
+    deleteConfirmInput.addEventListener('input', validateDeleteInput);
+    deleteAllBtn.addEventListener('click', nukeAllData); // "Nuke" for dramatic effect in comments only :)
+
     // Re-render with restored settings
     renderList();
 });
+
+// Settings Logic
+function openSettings() {
+    mainDashboard.style.display = 'none';
+    settingsPanel.style.display = 'block';
+
+    // Auto-populate export
+    exportArea.value = JSON.stringify(thoughts);
+}
+
+function closeSettings() {
+    settingsPanel.style.display = 'none';
+    mainDashboard.style.display = 'grid'; // Restore grid
+    // Reset danger zone
+    deleteConfirmInput.value = '';
+    validateDeleteInput();
+}
+
+function copyDataToClipboard() {
+    exportArea.select();
+    exportArea.setSelectionRange(0, 99999); // Mobile
+    navigator.clipboard.writeText(exportArea.value).then(() => {
+        copyFeedback.style.display = 'block';
+        setTimeout(() => copyFeedback.style.display = 'none', 2000);
+    });
+}
+
+function importData() {
+    const raw = importArea.value;
+    try {
+        const data = JSON.parse(raw);
+        if (Array.isArray(data)) {
+            thoughts = data;
+            saveThoughts();
+            importArea.value = '';
+            alert('Data imported successfully!');
+            closeSettings();
+        } else {
+            alert('Invalid data format. Must be an array of thoughts.');
+        }
+    } catch (e) {
+        alert('Invalid JSON. Please check your text.');
+    }
+}
+
+function validateDeleteInput() {
+    if (deleteConfirmInput.value.trim().toUpperCase() === 'DELETE') {
+        deleteAllBtn.disabled = false;
+        deleteAllBtn.style.opacity = '1';
+        deleteAllBtn.style.cursor = 'pointer';
+    } else {
+        deleteAllBtn.disabled = true;
+        deleteAllBtn.style.opacity = '0.5';
+        deleteAllBtn.style.cursor = 'not-allowed';
+    }
+}
+
+function nukeAllData() {
+    // Confirmation is implied by typing 'delete'
+    thoughts = [];
+    saveThoughts();
+    // alert('All data deleted.'); // Removed redundant popup
+    closeSettings();
+}
 
 // Font Size Logic
 function changeFontSize(delta) {
@@ -202,7 +289,7 @@ clearHistoryBtn.addEventListener('click', () => {
                 clearHistoryBtn.style.color = '';
                 clearHistoryBtn.style.fontWeight = '';
             }
-        }, 3000);
+        }, 8000); // Extended to 8 seconds
     }
 });
 
@@ -384,7 +471,7 @@ thoughtsList.addEventListener('click', (e) => {
                     btn.style.fontSize = '';
                     btn.style.color = '';
                 }
-            }, 3000);
+            }, 8000); // Extended to 8 seconds
         }
     }
 });
