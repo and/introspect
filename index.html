@@ -140,7 +140,7 @@
                                 placeholder="Describe your thought..." required></textarea>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group hidden-initially" id="rootCauseSection">
                             <label data-i18n="label_root_cause">Root Cause</label>
                             <p class="field-hint" data-i18n="hint_select_multiple">Select one or more origins</p>
                             <div class="checkbox-group-compact" id="rootCauseGroup">
@@ -175,11 +175,11 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group hidden-initially" id="natureSection">
                             <label data-i18n="label_nature">Nature</label>
                             <div class="radio-group-inline">
                                 <label class="radio-card-inline good">
-                                    <input type="radio" name="nature" value="Good" required>
+                                    <input type="radio" name="nature" value="Good">
                                     <span class="radio-content-inline">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -315,9 +315,15 @@
             <div class="modal-body">
                 <!-- Thought Content -->
                 <div class="introspect-section">
-                    <label data-i18n="label_thought">Thought</label>
                     <div id="modalThoughtContent" class="introspect-display"></div>
-                    <div id="modalThoughtMeta" class="introspect-meta"></div>
+                    <div id="modalThoughtMeta" class="introspect-meta-with-votes">
+                        <span id="modalCreatedDate"></span>
+                        <div class="vote-controls-inline-meta">
+                            <button class="vote-btn-inline" id="modalDownvote" title="Less recurring">▼</button>
+                            <span class="vote-count-inline" id="modalScore">0</span>
+                            <button class="vote-btn-inline" id="modalUpvote" title="More recurring">▲</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Root Causes - Compact -->
@@ -355,57 +361,44 @@
                     </div>
                 </div>
 
-                <!-- Nature & Recurrence - Single Line -->
+                <!-- Nature Only -->
                 <div class="introspect-section">
-                    <div class="nature-recurrence-row">
-                        <div class="nature-inline">
-                            <label data-i18n="label_nature">Nature</label>
-                            <div class="radio-group-inline">
-                                <label class="radio-card-inline good">
-                                    <input type="radio" name="modalNature" value="Good">
-                                    <span class="radio-content-inline">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                                        </svg>
-                                        <span data-i18n="nature_good">Good</span>
-                                    </span>
-                                </label>
-                                <label class="radio-card-inline harmful">
-                                    <input type="radio" name="modalNature" value="Harmful">
-                                    <span class="radio-content-inline">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                        </svg>
-                                        <span data-i18n="nature_harmful">Harmful</span>
-                                    </span>
-                                </label>
-                                <label class="radio-card-inline unsure">
-                                    <input type="radio" name="modalNature" value="Unsure">
-                                    <span class="radio-content-inline">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                        </svg>
-                                        <span data-i18n="nature_unsure">Unsure</span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="recurrence-inline">
-                            <label data-i18n="label_recurrence">Recurrence</label>
-                            <div class="vote-controls-inline">
-                                <button class="vote-btn-inline" id="modalDownvote" title="Less recurring">▼</button>
-                                <span class="vote-count-inline" id="modalScore">0</span>
-                                <button class="vote-btn-inline" id="modalUpvote" title="More recurring">▲</button>
-                            </div>
-                        </div>
+                    <label data-i18n="label_nature">Nature</label>
+                    <div class="radio-group-inline">
+                        <label class="radio-card-inline good">
+                            <input type="radio" name="modalNature" value="Good">
+                            <span class="radio-content-inline">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                </svg>
+                                <span data-i18n="nature_good">Good</span>
+                            </span>
+                        </label>
+                        <label class="radio-card-inline harmful">
+                            <input type="radio" name="modalNature" value="Harmful">
+                            <span class="radio-content-inline">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                <span data-i18n="nature_harmful">Harmful</span>
+                            </span>
+                        </label>
+                        <label class="radio-card-inline unsure">
+                            <input type="radio" name="modalNature" value="Unsure">
+                            <span class="radio-content-inline">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                <span data-i18n="nature_unsure">Unsure</span>
+                            </span>
+                        </label>
                     </div>
                 </div>
 
@@ -414,9 +407,14 @@
                     <label data-i18n="label_comments">Comments</label>
                     <div id="modalCommentsList" class="comments-list"></div>
 
-                    <div class="comment-input-area">
-                        <textarea id="modalCommentInput" data-i18n-placeholder="placeholder_add_comment" placeholder="Add a comment..." rows="2"></textarea>
-                        <button class="btn-secondary" id="modalAddComment" data-i18n="btn_add_comment">Add Comment</button>
+                    <div class="comment-input-area-inline">
+                        <textarea id="modalCommentInput" data-i18n-placeholder="placeholder_add_comment" placeholder="Add a comment..." rows="1"></textarea>
+                        <button class="btn-send" id="modalAddComment" title="Send">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 

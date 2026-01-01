@@ -243,23 +243,44 @@ function saveThoughts() {
     renderApp();
 }
 
+// Reveal hidden sections when user starts typing
+const thoughtContentInput = document.getElementById('thoughtContent');
+const rootCauseSection = document.getElementById('rootCauseSection');
+const natureSection = document.getElementById('natureSection');
+
+let sectionsRevealed = false;
+
+thoughtContentInput.addEventListener('input', () => {
+    if (!sectionsRevealed && thoughtContentInput.value.trim().length > 0) {
+        // Reveal the sections with a slight stagger for better UX
+        setTimeout(() => {
+            rootCauseSection.classList.add('revealed');
+        }, 100);
+        setTimeout(() => {
+            natureSection.classList.add('revealed');
+        }, 300);
+        sectionsRevealed = true;
+    } else if (sectionsRevealed && thoughtContentInput.value.trim().length === 0) {
+        // Hide sections if content is cleared
+        rootCauseSection.classList.remove('revealed');
+        natureSection.classList.remove('revealed');
+        sectionsRevealed = false;
+    }
+});
+
 // Handle Form Submit (Create or Update)
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const content = document.getElementById('thoughtContent').value;
 
-    // Get all checked root causes
+    // Get all checked root causes (optional)
     const rootCauseCheckboxes = document.querySelectorAll('input[name="rootCause"]:checked');
     const rootCauses = Array.from(rootCauseCheckboxes).map(cb => cb.value);
 
-    // Validate at least one root cause is selected
-    if (rootCauses.length === 0) {
-        alert(t('err_select_root_cause') || 'Please select at least one root cause');
-        return;
-    }
-
-    const nature = document.querySelector('input[name="nature"]:checked').value;
+    // Get nature (optional)
+    const natureRadio = document.querySelector('input[name="nature"]:checked');
+    const nature = natureRadio ? natureRadio.value : null;
 
     if (editingId) {
         // Update existing thought
@@ -291,6 +312,11 @@ form.addEventListener('submit', (e) => {
 
     saveThoughts();
     form.reset();
+
+    // Hide the sections again after form reset
+    rootCauseSection.classList.remove('revealed');
+    natureSection.classList.remove('revealed');
+    sectionsRevealed = false;
 
     // Feedback
     const btn = form.querySelector('.btn-primary');
@@ -470,7 +496,7 @@ function renderList() {
         });
 
         const el = document.createElement('div');
-        el.className = `thought-item ${thought.classification.toLowerCase()}`;
+        el.className = `thought-item ${thought.classification ? thought.classification.toLowerCase() : ''}`;
 
         // Simple Monocolor SVGs
         const iconGood = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>`;
@@ -486,8 +512,8 @@ function renderList() {
         const score = thought.score || 0;
 
         // Handle both old (string) and new (array) formats for backward compatibility
-        const rootCausesArray = Array.isArray(thought.rootCauses) ? thought.rootCauses : [thought.rootCause];
-        const rootCauseTags = rootCausesArray.map(rc => `<span class="thought-cause-tag">${escapeHtml(rc)}</span>`).join('');
+        const rootCausesArray = Array.isArray(thought.rootCauses) ? thought.rootCauses : (thought.rootCause ? [thought.rootCause] : []);
+        const rootCauseTags = rootCausesArray.filter(rc => rc).map(rc => `<span class="thought-cause-tag">${escapeHtml(rc)}</span>`).join('');
 
         el.innerHTML = `
             <div class="thought-meta">
@@ -508,7 +534,7 @@ function renderList() {
             <div class="thought-content" title="Click to reveal/hide in privacy mode">${escapeHtml(thought.content)}</div>
             <div class="thought-actions">
                 <div style="display:flex; align-items:center; gap:0.5rem; margin-right:auto;">
-                    ${icon} <span>${thought.classification}</span>
+                    ${thought.classification ? `${icon} <span>${thought.classification}</span>` : ''}
                 </div>
 
                 <div class="vote-controls">
@@ -599,7 +625,11 @@ function renderStats() {
 
     // 2. Nature Distribution (Bar Chart)
     const natureCounts = {};
-    thoughts.forEach(t => { natureCounts[t.classification] = (natureCounts[t.classification] || 0) + 1; });
+    thoughts.forEach(t => {
+        if (t.classification) {
+            natureCounts[t.classification] = (natureCounts[t.classification] || 0) + 1;
+        }
+    });
     renderBarChart(natureContainer, natureCounts, thoughts.length);
 }
 
@@ -812,7 +842,7 @@ window.openIntrospectionModal = function(id) {
         hour: '2-digit',
         minute: '2-digit'
     });
-    modalThoughtMeta.innerHTML = `<strong>${t('label_created')}:</strong> ${formattedDate}`;
+    document.getElementById('modalCreatedDate').innerHTML = `<strong>${t('label_created')}:</strong> ${formattedDate}`;
 
     // Populate root causes checkboxes
     const rootCausesArray = Array.isArray(thought.rootCauses) ? thought.rootCauses : [thought.rootCause];

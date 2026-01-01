@@ -206,6 +206,23 @@ textarea {
     font-weight: 400;
 }
 
+/* Hidden form sections - revealed on typing */
+.form-group.hidden-initially {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    transition: all 0.5s ease-in-out;
+}
+
+.form-group.hidden-initially.revealed {
+    max-height: 500px;
+    opacity: 1;
+    margin-bottom: 1.5rem;
+    overflow: visible;
+}
+
 /* Checkbox Group */
 .checkbox-group {
     display: grid;
@@ -471,7 +488,7 @@ textarea {
 
 .thoughts-list {
     flex: 1;
-    /* overflow-y: auto; Removed for scrolling */
+    overflow-y: auto;
     padding-right: 0.5rem;
     display: flex;
     flex-direction: column;
@@ -727,7 +744,7 @@ textarea {
     }
 
     .thoughts-list {
-        max-height: 400px;
+        max-height: 320px;
         border: 1px solid var(--surface-border);
         border-radius: var(--radius-md);
         padding: 0 1rem;
@@ -1293,6 +1310,71 @@ textarea {
     color: var(--text-main);
     min-width: 2ch;
     text-align: center;
+}
+
+/* Metadata with inline votes in modal */
+.introspect-meta-with-votes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--surface-border);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.vote-controls-inline-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Inline comment input like WhatsApp */
+.comment-input-area-inline {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.comment-input-area-inline textarea {
+    flex: 1;
+    resize: none;
+    padding: 0.5rem;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.comment-input-area-inline textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.btn-send {
+    background: var(--primary-color);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-send:hover {
+    background: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+.btn-send svg {
+    margin-left: 2px; /* Slight offset for visual balance */
 }
 
 /* Mobile Modal */
