@@ -24,11 +24,13 @@ const importBtn = document.getElementById('importBtn');
 const deleteConfirmInput = document.getElementById('deleteConfirmInput');
 const deleteAllBtn = document.getElementById('deleteAllBtn');
 const copyFeedback = document.getElementById('copyFeedback');
+const languageSelect = document.getElementById('languageSelect');
 
 // State
 let thoughts = [];
 let editingId = null;
 let currentFontSize = 100; // Percentage
+let currentLanguage = 'en'; // Default
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -65,6 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
         applyFontSize();
     }
 
+    // Language State
+    const savedLang = localStorage.getItem('introspection_language');
+    if (savedLang && translations[savedLang]) {
+        currentLanguage = savedLang;
+        languageSelect.value = savedLang;
+    }
+    applyLanguage(currentLanguage);
+
     // Settings Navigation
     settingsToggleBtn.addEventListener('click', openSettings);
     backToHomeBtn.addEventListener('click', closeSettings);
@@ -75,9 +85,43 @@ document.addEventListener('DOMContentLoaded', () => {
     deleteConfirmInput.addEventListener('input', validateDeleteInput);
     deleteAllBtn.addEventListener('click', nukeAllData); // "Nuke" for dramatic effect in comments only :)
 
+    // Language Change
+    languageSelect.addEventListener('change', (e) => {
+        changeLanguage(e.target.value);
+    });
+
     // Re-render with restored settings
     renderList();
 });
+
+// i18n Helpers
+function t(key) {
+    if (!translations[currentLanguage]) return key;
+    return translations[currentLanguage][key] || key;
+}
+
+function changeLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('introspection_language', lang);
+    applyLanguage(lang);
+    renderApp(); // Re-render dynamic content (charts, list)
+}
+
+function applyLanguage(lang) {
+    const dict = translations[lang] || translations['en'];
+
+    // Text Content
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+    });
+
+    // Placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (dict[key]) el.placeholder = dict[key];
+    });
+}
 
 // Settings Logic
 function openSettings() {
@@ -113,13 +157,13 @@ function importData() {
             thoughts = data;
             saveThoughts();
             importArea.value = '';
-            alert('Data imported successfully!');
+            alert(t('msg_import_success'));
             closeSettings();
         } else {
-            alert('Invalid data format. Must be an array of thoughts.');
+            alert(t('err_invalid_format'));
         }
     } catch (e) {
-        alert('Invalid JSON. Please check your text.');
+        alert(t('err_invalid_json'));
     }
 }
 
@@ -139,7 +183,7 @@ function nukeAllData() {
     // Confirmation is implied by typing 'delete'
     thoughts = [];
     saveThoughts();
-    // alert('All data deleted.'); // Removed redundant popup
+    // alert(t('msg_all_deleted')); 
     closeSettings();
 }
 
@@ -220,11 +264,13 @@ form.addEventListener('submit', (e) => {
 
     // Feedback
     const btn = form.querySelector('.btn-primary');
-    const originalText = btn.textContent;
-    btn.textContent = editingId ? 'Updated!' : 'Saved!';
+    // const originalText = btn.textContent; // Not needed if we reset correctly
+
+    btn.textContent = editingId ? t('msg_updated') : t('msg_saved');
+
     setTimeout(() => {
-        // Only reset text if we aren't in the middle of another operation (edge case, but simple reset is fine)
-        if (!editingId) btn.textContent = 'Log Thought';
+        // Reset to original label
+        if (!editingId) btn.textContent = t('btn_log_thought');
     }, 2000);
 });
 
@@ -244,7 +290,7 @@ window.editThought = function (id) {
 
     // Change UI to Edit Mode
     const btn = form.querySelector('.btn-primary');
-    btn.textContent = 'Update Thought';
+    btn.textContent = t('btn_update_thought');
     btn.style.background = 'var(--text-main)'; // Dark slate to indicate edit mode
 
     // Scroll to form on mobile
@@ -253,7 +299,7 @@ window.editThought = function (id) {
 
 function exitEditModeUI() {
     const btn = form.querySelector('.btn-primary');
-    btn.textContent = 'Log Thought';
+    btn.textContent = t('btn_log_thought');
     btn.style.background = ''; // Reset to CSS default
 }
 
@@ -276,15 +322,15 @@ clearHistoryBtn.addEventListener('click', () => {
     } else {
         // First click: Request confirmation
         const originalText = clearHistoryBtn.textContent;
-        clearHistoryBtn.textContent = 'Confirm Clear?';
+        clearHistoryBtn.textContent = t('btn_confirm_clear');
         clearHistoryBtn.classList.add('confirm-clear');
         clearHistoryBtn.style.color = 'var(--danger-text)';
         clearHistoryBtn.style.fontWeight = '700';
 
-        // Reset if not clicked within 3 seconds
+        // Reset if not clicked within 8 seconds
         setTimeout(() => {
             if (thoughts.length > 0) { // Only reset if data still exists (not cleared)
-                clearHistoryBtn.textContent = originalText;
+                clearHistoryBtn.textContent = t('btn_clear_all'); // Reset specific text
                 clearHistoryBtn.classList.remove('confirm-clear');
                 clearHistoryBtn.style.color = '';
                 clearHistoryBtn.style.fontWeight = '';
@@ -359,14 +405,14 @@ function renderList() {
             // Truly empty
             thoughtsList.innerHTML = `
                 <div class="empty-state" style="margin-top: 2rem;">
-                    <p>No thoughts yet.</p>
+                    <p data-i18n="empty_history">${t('empty_history')}</p>
                 </div>
             `;
         } else {
             // Empty search result
             thoughtsList.innerHTML = `
                 <div class="empty-state" style="margin-top: 2rem;">
-                    <p>No thoughts found.</p>
+                    <p data-i18n="empty_search_results">${t('empty_search_results')}</p>
                 </div>
             `;
         }
@@ -457,16 +503,16 @@ thoughtsList.addEventListener('click', (e) => {
         } else {
             // First click: Ask for confirmation
             const originalContent = btn.innerHTML;
-            btn.innerHTML = 'Sure?';
+            btn.innerHTML = t('btn_sure');
             btn.classList.add('confirm-delete');
             btn.style.width = 'auto';
             btn.style.fontSize = '0.8rem';
             btn.style.color = 'var(--harmful-color)'; // Make it red immediately
 
-            // Reset if not clicked within 3 seconds
+            // Reset if not clicked within 8 seconds
             setTimeout(() => {
                 if (btn && btn.isConnected) { // Check if element still exists
-                    btn.innerHTML = originalContent;
+                    btn.innerHTML = originalContent; // Icon
                     btn.classList.remove('confirm-delete');
                     btn.style.fontSize = '';
                     btn.style.color = '';
@@ -482,7 +528,7 @@ function renderStats() {
     const natureContainer = document.getElementById('statsNature');
 
     if (thoughts.length === 0) {
-        const emptyHtml = '<p class="empty-state-text" style="color:var(--text-muted); text-align:center;">Log thoughts to see analytics</p>';
+        const emptyHtml = `<p class="empty-state-text" style="color:var(--text-muted); text-align:center;" data-i18n="empty_log_to_see">${t('empty_log_to_see')}</p>`;
         rootContainer.innerHTML = emptyHtml;
         natureContainer.innerHTML = emptyHtml;
         return;
