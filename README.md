@@ -1,6 +1,6 @@
 # Introspection - Thought Analysis Tool
 
-A premium, minimalist web application designed to help you track, analyze, and understand the root causes of your thoughts. Inspired by the philosophy that "Analysis of Thought Helps Us to Improve Our Mental Health," this tool provides a private, confident space for self-reflection.
+A privacy-focused, minimalist web application for practicing the introspection framework taught by Vethathiri Maharishi. This tool provides a structured space to systematically examine your thoughts, trace them to their root causes, and cultivate mental clarity through guided self-reflection.
 
 ## ✨ Key Features
 
@@ -16,9 +16,9 @@ A premium, minimalist web application designed to help you track, analyze, and u
 - **Interactive Filtering**: Click any bar or tile in the analytics section to instantly filter your thought history.
 
 ### 🛡️ Privacy & Focus
+- **Local Storage**: All data lives **100% in your browser**. No data is ever sent to a server.
 - **Privacy Toggle (Eye Icon)**: Instantly blur all thought content for privacy when in public spaces.
 - **Click-to-Reveal**: In privacy mode, click any blurred thought to temporarily reveal it.
-- **Local Storage**: All data lives **100% in your browser**. No data is ever sent to a server.
 
 ### ♿ Accessibility & Customization
 - **Font Size Controls**: Adjust the text size (A+/A-) for comfortable reading.
