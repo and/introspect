@@ -650,12 +650,8 @@ textarea {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.thought-item:hover .thought-actions-compact {
     opacity: 1;
+    transition: opacity 0.2s;
 }
 
 .introspect-btn-compact,

@@ -523,8 +523,8 @@ function renderList() {
         // Handle both old (string) and new (array) formats for backward compatibility
         const rootCausesArray = Array.isArray(thought.rootCauses) ? thought.rootCauses : (thought.rootCause ? [thought.rootCause] : []);
 
-        // Check if mobile (screen width < 850px)
-        const isMobile = window.innerWidth < 850;
+        // Always show full root cause text on desktop, only abbreviate on very small screens
+        const isMobile = window.innerWidth <= 600;
 
         const rootCauseTags = rootCausesArray.filter(rc => rc).map(rc => {
             const displayText = isMobile ? rc.charAt(0) : rc;
