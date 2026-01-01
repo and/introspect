@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introspection - Thought Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="app-container">
+        <header class="app-header">
+            <div>
+                <h1>Introspection</h1>
+                <p class="subtitle">Analysis of thoughts</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button id="fontDecrease" class="btn-icon" title="Decrease Font Size" style="color:var(--text-muted);">
+                    <span style="font-size: 0.8rem; font-weight: 700;">A-</span>
+                </button>
+                <button id="fontIncrease" class="btn-icon" title="Increase Font Size" style="color:var(--text-muted);">
+                    <span style="font-size: 1.1rem; font-weight: 700;">A+</span>
+                </button>
+                <div style="width: 1px; height: 1.5rem; background: var(--surface-border); margin: 0 0.5rem;"></div>
+                <button id="privacyToggle" class="btn-icon" title="Toggle Privacy"
+                    style="background:transparent; color:var(--text-muted);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Left Column: Input and Stats -->
+            <div class="left-column">
+                <section class="thought-input-card glass-panel">
+                    <h2>Log Thought</h2>
+                    <form id="thoughtForm">
+                        <div class="form-group">
+                            <label for="thoughtContent">What's on your mind?</label>
+                            <textarea id="thoughtContent" placeholder="Describe your thought..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rootCause">Root Cause</label>
+                            <select id="rootCause" required>
+                                <option value="" disabled selected>Select Origin</option>
+                                <option value="Needs">Needs</option>
+                                <option value="Habits">Habits</option>
+                                <option value="Environmental conditions">Environment</option>
+                                <option value="Others impositions">Others Impositions</option>
+                                <option value="Heredity">Heredity</option>
+                                <option value="Divinity">Divinity</option>
+                                <option value="Unknown">Unknown</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nature</label>
+                            <div class="radio-group">
+                                <label class="radio-card good">
+                                    <input type="radio" name="nature" value="Good" required>
+                                    <span class="radio-content">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path
+                                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                                            </path>
+                                        </svg>
+                                        Good
+                                    </span>
+                                </label>
+                                <label class="radio-card harmful">
+                                    <input type="radio" name="nature" value="Harmful">
+                                    <span class="radio-content">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                        Harmful
+                                    </span>
+                                </label>
+                                <label class="radio-card unsure">
+                                    <input type="radio" name="nature" value="Unsure">
+                                    <span class="radio-content">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>
+                                        Unsure
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Log Thought</button>
+                    </form>
+                </section>
+
+                <section class="stats-panel glass-panel">
+                    <h2>Patterns</h2>
+
+                    <div class="stats-section">
+                        <h3 style="margin-bottom:0.5rem; font-size:0.8rem; color:var(--text-muted);">Root Cause</h3>
+                        <div id="statsRootCause">
+                            <p class="empty-state" style="margin-top: 0.5rem; font-size: 0.8rem;">No data yet</p>
+                        </div>
+                    </div>
+
+                    <div class="stats-section" style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom:0.5rem; font-size:0.8rem; color:var(--text-muted);">Nature</h3>
+                        <div id="statsNature">
+                            <p class="empty-state" style="margin-top: 0.5rem; font-size: 0.8rem;">No data yet</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: History List -->
+            <section class="history-panel" id="historyPanel">
+                <div class="history-header">
+                    <h3>Recent Thoughts</h3>
+                    <div class="history-controls">
+                        <select id="sortThoughts" class="minimal-select" title="Sort by">
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="votes">Recurring</option>
+                        </select>
+                        <button id="clearHistory" class="btn-text-danger"
+                            style="display: none; font-size: 0.75rem;">Clear All</button>
+                    </div>
+                </div>
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" id="searchTerm" placeholder="Search thoughts..." class="search-input">
+                    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <div id="thoughtsList" class="thoughts-list">
+                    <!-- Thoughts injected here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
