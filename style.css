@@ -568,7 +568,7 @@ textarea {
     border: none;
     border-bottom: 1px solid var(--surface-border);
     border-radius: 0;
-    padding: 0.4rem 0.5rem;
+    padding: 0.4rem 0.25rem;
     transition: background-color 0.2s;
     border-left: none;
 }
@@ -973,7 +973,7 @@ textarea {
         max-height: 320px;
         border: 1px solid var(--surface-border);
         border-radius: var(--radius-md);
-        padding: 0 1rem;
+        padding: 0;
     }
 
     .thought-item:last-child {
