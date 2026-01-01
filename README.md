@@ -6,9 +6,10 @@ A privacy-focused, minimalist web application for practicing the introspection f
 
 ### 🧠 Thought Tracking
 - **Log Thoughts**: Capture what's on your mind instantly.
-- **Root Cause Analysis**: Categorize thoughts by origin (e.g., Habits, Needs, Environment, Heredity).
-- **Nature Classification**: Classify thoughts as **Good**, **Harmful**, or **Unsure**.
+- **Multi-Select Root Cause Analysis**: Select multiple root causes per thought (Habits, Needs, Environment, Heredity, Others Impositions, Divinity, Unknown).
+- **Nature Classification**: Classify thoughts as **Good** 😊, **Harmful**, or **Unsure**.
 - **Recurring Thoughts**: Upvote/Downvote thoughts to track how often they recur.
+- **Deep Introspection Mode**: Click the introspect icon to analyze thoughts in detail, edit classifications, adjust recurrence scores, and add timestamped reflective comments.
 
 ### 📊 Interactive Analytics
 - **Treemap Visualization**: Visualize your mental landscape. The "Root Cause" section uses a dynamic **Treemap** where larger tiles represent more frequent underlying causes.
@@ -18,6 +19,7 @@ A privacy-focused, minimalist web application for practicing the introspection f
 ### 🛡️ Privacy & Focus
 - **Local Storage**: All data lives **100% in your browser**. No data is ever sent to a server.
 - **Privacy Toggle (Eye Icon)**: Instantly blur all thought content for privacy when in public spaces.
+- **Keyboard Shortcut**: Press `Esc` key to toggle privacy mode (or close modal/settings if open).
 - **Click-to-Reveal**: In privacy mode, click any blurred thought to temporarily reveal it.
 
 ### 🌐 Internationalization (i18n)

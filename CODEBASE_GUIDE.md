@@ -41,10 +41,21 @@ introspection_tools/
 {
   id: Number,              // Timestamp-based unique ID
   content: String,         // User's thought text
-  rootCause: String,       // One of: Needs, Habits, Environmental conditions,
+  rootCauses: Array,       // Array of strings: Needs, Habits, Environmental conditions,
                           //         Others impositions, Heredity, Divinity, Unknown
+                          // Note: Old data may still use rootCause: String (backward compatible)
   classification: String,  // One of: Good, Harmful, Unsure
   score: Number,          // Upvote/downvote counter for recurring thoughts
+  timestamp: String,      // ISO 8601 datetime string
+  comments: Array         // Optional: Array of comment objects
+}
+```
+
+**Comment Object Structure:**
+```javascript
+{
+  id: Number,              // Timestamp-based unique ID
+  text: String,           // Comment text
   timestamp: String       // ISO 8601 datetime string
 }
 ```
@@ -263,6 +274,53 @@ translations.{locale} = {
 - Replaces textContent/placeholder with translated values
 - Calls `renderApp()` to re-render dynamic content (charts, list)
 
+### 7. Introspection Modal (Deep Analysis)
+**Files:** index.html:301-431, app.js:742-963, style.css:799-1270
+**Purpose:** Provides detailed view and editing of individual thoughts with comments
+
+**Features:**
+- **Thought Display**: Shows thought content and metadata (created date)
+- **Multi-Select Root Causes**: Compact checkbox pills for selecting multiple root causes
+- **Nature & Recurrence Inline**: Single-line layout with nature radio buttons and vote controls
+- **Comments System**: Add timestamped reflective comments to thoughts
+- **Edit & Save**: Modify root causes, nature, and recurrence score
+
+**UI Components:**
+- Compact checkbox group (`.checkbox-group-compact`): Inline pills with flexbox wrap
+- Inline nature radios (`.radio-card-inline`): Three options in single row
+- Compact vote controls (`.vote-btn-inline`): Smaller 28px buttons
+- Secondary button style (`.btn-secondary`): Used for "Add Comment" vs primary "Save Changes"
+
+**Keyboard Shortcuts:**
+- `Esc` key: Close modal (priority: modal > settings > toggle privacy)
+
+**Data Structure:**
+- Comments stored in `thought.comments` array
+- Each comment has `id`, `text`, and `timestamp`
+- Backward compatible with thoughts that don't have comments
+
+### 8. Multi-Select Root Causes
+**Files:** index.html:143-176, app.js:246-305
+**How it works:**
+- Changed from `<select>` dropdown to checkbox group
+- Data model: `rootCauses` array instead of `rootCause` string
+- Backward compatibility: Checks for both formats when rendering
+- Validation: At least one root cause must be selected
+- Analytics: Each thought can contribute to multiple categories in treemap
+
+### 9. Keyboard Shortcuts
+**Files:** app.js:856-872
+**Escape Key Behavior:**
+1. If introspection modal is open → close modal
+2. Else if settings panel is open → close settings
+3. Otherwise → toggle privacy mode
+
+### 10. Icon System
+**Good Nature Icon:** Smiley face (😊) instead of star
+**Introspect Icon:** Circular icon with 20px size, subtle gray background (rgba(71, 84, 103, 0.08))
+- Hovers to primary orange/red color
+- Positioned in top-right with date and action buttons
+
 ## Data Flow Diagrams
 
 ### Creating a New Thought
@@ -271,9 +329,21 @@ User fills form → Submit event
   ↓
 app.js:247 (form submit handler)
   ↓
-Extract values (content, rootCause, nature)
+Extract values:
+  - content (textarea)
+  - rootCauses (all checked checkboxes → array)
+  - classification (selected radio button)
   ↓
-Create thought object: { id, content, rootCause, classification, score: 0, timestamp }
+Validate: at least one root cause selected
+  ↓
+Create thought object: {
+  id: Date.now(),
+  content,
+  rootCauses: [...],
+  classification,
+  score: 0,
+  timestamp: new Date().toISOString()
+}
   ↓
 thoughts.unshift(newThought)  // Add to beginning
   ↓
@@ -427,6 +497,64 @@ User clicks blurred thought → .revealed class added → blur removed
 ### Modifying the Thought Data Model
 1. Update object creation in form submit handler (app.js:271-278)
 2. Modify rendering logic in `renderList()` (app.js:442-489)
+
+## Recent UI Improvements (2026)
+
+### Space-Optimized Introspection Modal
+**Goal:** Reduce vertical space while maintaining functionality
+
+**Changes Made:**
+1. **Compact Root Cause Checkboxes**
+   - Changed from 2-column grid cards to inline flexbox pills
+   - Smaller padding (0.35rem vs 0.5rem)
+   - Font size reduced to 0.85rem
+   - Wraps naturally on smaller screens
+
+2. **Single-Line Nature & Recurrence**
+   - Combined two sections into one horizontal row
+   - Nature radios displayed inline (flex layout)
+   - Vote buttons reduced from 36px to 28px
+   - Labels positioned inline instead of above
+
+3. **Reduced Spacing**
+   - Section margins: 1.5rem → 1rem
+   - Label margins: 0.75rem → 0.5rem
+   - Label font: 0.85rem → 0.75rem
+   - Comment textarea: 3 rows → 2 rows
+
+4. **Button Hierarchy**
+   - Primary button (`.btn-primary`): Red background for "Save Changes"
+   - Secondary button (`.btn-secondary`): Gray border for "Add Comment"
+   - Clear visual priority for main action
+
+### Icon Updates
+**Good Nature Icon:**
+- Changed from star SVG to smiley face emoji icon
+- Updated in: main form, modal, and thought list rendering
+- SVG paths: Circle face + smile curve + two eye dots
+
+**Introspect Button:**
+- Increased from 14px to 20px icon size
+- Added circular background: rgba(71, 84, 103, 0.08)
+- Hover effect: Changes to primary color rgba(230, 53, 34, 0.1)
+- Tooltip: "Introspect"
+- Positioned top-right with date and action buttons
+
+### CSS Architecture
+**Compact Modal Styles:**
+```css
+.checkbox-group-compact       /* Inline pills wrapper */
+.checkbox-item-compact        /* Individual checkbox pill */
+.radio-group-inline           /* Horizontal radio container */
+.radio-card-inline            /* Individual radio button */
+.vote-controls-inline         /* Smaller vote buttons */
+.nature-recurrence-row        /* Flexbox row container */
+.btn-secondary                /* Secondary action button */
+```
+
+**Responsive Behavior:**
+- Modal maintains compact layout on mobile
+- Nature and recurrence stack on very small screens (handled by flexbox)
 3. Update export/import validation if needed (app.js:173-188)
 4. Consider migration for existing localStorage data
 
