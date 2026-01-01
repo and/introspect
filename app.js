@@ -604,11 +604,17 @@ thoughtsList.addEventListener('click', (e) => {
 function renderStats() {
     const rootContainer = document.getElementById('statsRootCause');
     const natureContainer = document.getElementById('statsNature');
+    const rootSection = document.getElementById('rootCauseStatsSection');
+    const natureSection = document.getElementById('natureStatsSection');
+    const patternsPanel = document.getElementById('patternsPanel');
 
     if (thoughts.length === 0) {
         const emptyHtml = `<p class="empty-state-text" style="color:var(--text-muted); text-align:center;" data-i18n="empty_log_to_see">${t('empty_log_to_see')}</p>`;
         rootContainer.innerHTML = emptyHtml;
         natureContainer.innerHTML = emptyHtml;
+        rootSection.style.display = 'block';
+        natureSection.style.display = 'block';
+        patternsPanel.style.display = 'flex';
         return;
     }
 
@@ -621,7 +627,14 @@ function renderStats() {
             if (rc) rootCounts[rc] = (rootCounts[rc] || 0) + 1;
         });
     });
-    renderTreemap(rootContainer, rootCounts, thoughts.length);
+
+    const hasRootCauseData = Object.keys(rootCounts).length > 0;
+    if (hasRootCauseData) {
+        renderTreemap(rootContainer, rootCounts, thoughts.length);
+        rootSection.style.display = 'block';
+    } else {
+        rootSection.style.display = 'none';
+    }
 
     // 2. Nature Distribution (Bar Chart)
     const natureCounts = {};
@@ -630,7 +643,21 @@ function renderStats() {
             natureCounts[t.classification] = (natureCounts[t.classification] || 0) + 1;
         }
     });
-    renderBarChart(natureContainer, natureCounts, thoughts.length);
+
+    const hasNatureData = Object.keys(natureCounts).length > 0;
+    if (hasNatureData) {
+        renderBarChart(natureContainer, natureCounts, thoughts.length);
+        natureSection.style.display = 'block';
+    } else {
+        natureSection.style.display = 'none';
+    }
+
+    // Hide entire Patterns panel if both sections are empty
+    if (!hasRootCauseData && !hasNatureData) {
+        patternsPanel.style.display = 'none';
+    } else {
+        patternsPanel.style.display = 'flex';
+    }
 }
 
 // Helper: Render Treemap (Binary Split)
