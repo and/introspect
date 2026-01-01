@@ -27,6 +27,11 @@ A privacy-focused, minimalist web application for practicing the introspection f
 
 ## 🚀 Getting Started
 
+You can use the application directly in your browser:
+
+👉 **[Launch App](https://and.github.io/introspect)**
+
+### Running Locally
 No installation required. This is a standalone client-side application.
 
 1.  **Download** or Clone the repository.
