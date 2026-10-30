@@ -5,8 +5,10 @@
     --text-muted: #475467;
     --text-on-primary: #FFFFFF;
 
-    --primary-color: #E63522;
-    --primary-hover: #C52B1B;
+    /* Muted deep teal: calmer than the v1 red */
+    --primary-color: #2F6F73;
+    --primary-hover: #255A5E;
+    --primary-tint: #E8F2F1;
 
     --surface-color: #FFFFFF;
     --surface-border: #EAECF0;
@@ -19,14 +21,16 @@
 
     /* One accent per practice */
     --c-thought: #3E5C76;
-    --c-desire: #B54708;
-    --c-worry: #0E7C7B;
-    --c-anger: #C4320A;
+    --c-desire: #7A5E30;
+    --c-worry: #0B6B6A;
+    --c-anger: #8F4E45;
 
     --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
+    /* 3:1 against white so form fields are identifiable (WCAG 1.4.11) */
+    --input-border: #868FA0;
     --shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 4px 16px rgba(16, 24, 40, 0.04);
     --nav-h: 64px;
 }
@@ -54,7 +58,7 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Soft colour blob in the top-right that slowly changes shape and fades into white.
+/* Soft teal blob in the top-right that slowly changes shape and fades into white.
    Two layers with different timings so the outline never repeats exactly. */
 body::before,
 body::after {
@@ -69,7 +73,7 @@ body::before {
     right: -25vmax;
     width: 75vmax;
     height: 75vmax;
-    background: radial-gradient(closest-side, rgba(230, 53, 34, 0.16), rgba(245, 150, 60, 0.10) 45%, rgba(255, 255, 255, 0) 100%);
+    background: radial-gradient(closest-side, rgba(47, 140, 140, 0.16), rgba(120, 175, 205, 0.10) 45%, rgba(255, 255, 255, 0) 100%);
     border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
     animation: amoeba-a 22s ease-in-out infinite alternate;
 }
@@ -78,7 +82,7 @@ body::after {
     right: -15vmax;
     width: 50vmax;
     height: 50vmax;
-    background: radial-gradient(closest-side, rgba(245, 184, 61, 0.14), rgba(255, 255, 255, 0) 100%);
+    background: radial-gradient(closest-side, rgba(150, 200, 185, 0.16), rgba(255, 255, 255, 0) 100%);
     border-radius: 60% 40% 35% 65% / 55% 60% 40% 45%;
     animation: amoeba-b 17s ease-in-out infinite alternate;
 }
@@ -144,7 +148,7 @@ h2:focus { outline: none; }
     color: var(--text-muted);
     cursor: pointer;
 }
-.btn-icon.active { color: var(--primary-color); background: var(--danger-bg); }
+.btn-icon.active { color: var(--primary-color); background: var(--primary-tint); }
 .font-a { font-weight: 700; font-size: 1rem; }
 .font-a.small { font-size: 0.8rem; }
 
@@ -214,7 +218,7 @@ textarea, input[type="text"], input[type="search"], input[type="date"], select {
     width: 100%;
     min-height: 44px;
     padding: 0.75rem 0.9rem;
-    border: 1px solid var(--surface-border);
+    border: 1px solid var(--input-border);
     border-radius: var(--radius-md);
     background: var(--surface-color);
     /* 16px minimum stops iOS Safari zooming in on focus, even with A- applied */
@@ -274,7 +278,11 @@ textarea:focus, input:focus, select:focus {
     background: var(--surface-color);
     cursor: pointer;
 }
+.tile { flex-direction: row; align-items: center; gap: 0.75rem; }
+.tile-text { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 0; }
 .tile-title { font-weight: 600; color: var(--accent); }
+.practice-art { flex-shrink: 0; color: var(--accent); opacity: 0.55; }
+.learn-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
 .tile-desc { font-size: 0.85rem; color: var(--text-muted); }
 
 /* ---------- Entry cards ---------- */
@@ -332,34 +340,40 @@ textarea:focus, input:focus, select:focus {
 .seen-q { font-weight: 600; margin-bottom: 0.5rem; }
 .entry-main { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; flex: 1; }
 .entry-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
-.entry-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; align-items: center; font-size: 0.8rem; color: var(--text-muted); }
-.entry-decision { color: var(--text-main); font-weight: 500; }
-.entry-date { margin-left: auto; }
+.entry-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 0.4rem; align-items: center; font-size: 0.8rem; color: var(--text-muted); }
+/* Dots separate plain-text items; tags are already visually separate */
+.entry-meta > * + :not(.badge):not(.type-tag)::before { content: '\00B7'; margin-right: 0.4rem; color: #98A2B3; font-weight: 400; }
+.entry-decision { color: var(--text-main); }
+.entry-date { margin-left: 0; }
 
 .type-tag {
     display: inline-block;
     font-size: 0.75rem;
     font-weight: 600;
+    line-height: 1.4;
     color: var(--accent);
-    background: var(--surface-hover);
-    border: 1px solid var(--surface-border);
-    padding: 0.1rem 0.5rem;
-    border-radius: 999px;
+    padding: 0.05rem 0.4rem;
+    border-radius: var(--radius-sm);
+    /* Light tint of the practice colour; plain grey where color-mix is unsupported */
+    background: #F2F4F7;
+    background: color-mix(in srgb, var(--accent) 12%, #fff);
 }
 
+/* Status labels share the tinted-tag look of .type-tag */
 .badge {
     display: inline-block;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    padding: 0.1rem 0.5rem;
-    border-radius: 999px;
-    background: var(--surface-hover);
-    border: 1px solid var(--surface-border);
+    line-height: 1.4;
+    padding: 0.05rem 0.4rem;
+    border-radius: var(--radius-sm);
+    background: #F2F4F7;
     color: var(--text-muted);
 }
-.badge-draft { background: #FFFAEB; border-color: #FEDF89; color: #B54708; }
-.badge-due { background: #EFF8FF; border-color: #B2DDFF; color: #175CD3; }
-.badge-done { background: var(--success-bg); border-color: #ABEFC6; color: var(--success-text); margin-top: 1rem; }
+.badge.entry-decision { color: var(--text-main); }
+.badge-draft { background: #F5EFE3; color: #77592A; }
+.badge-due { background: #EAF3FD; color: #175CD3; }
+.badge-done { background: var(--success-bg); color: var(--success-text); margin-top: 1rem; }
 
 /* ---------- Wizard ---------- */
 .wizard { animation: rise 0.25s ease-out; }
@@ -486,12 +500,12 @@ textarea:focus, input:focus, select:focus {
     text-align: center;
     padding: 2rem 1rem;
     border-radius: var(--radius-lg);
-    background: #FFFAEB;
-    border: 1px solid #FEDF89;
+    background: #FBF7EE;
+    border: 1px solid #EADFC8;
 }
-.blessing-title { font-size: 1.75rem; font-weight: 600; color: #B54708; letter-spacing: 0.02em; }
+.blessing-title { font-size: 1.75rem; font-weight: 600; color: #8A6B3A; letter-spacing: 0.02em; }
 .blessing-sub { margin: 0.5rem auto 1.5rem; max-width: 30ch; color: var(--text-muted); }
-.blessing .btn { --accent: #B54708; }
+.blessing .btn { --accent: #8A6B3A; }
 .blessing.given .btn { background: var(--success-text); }
 
 /* ---------- Completion ---------- */
@@ -521,20 +535,21 @@ textarea:focus, input:focus, select:focus {
 .done-actions { display: flex; flex-direction: column; gap: 0.5rem; max-width: 320px; margin: 1.5rem auto 0; }
 
 /* ---------- Journal ---------- */
-.journal-filters { display: flex; gap: 0.25rem; margin: 0.5rem 0 0 -0.6rem; }
+.journal-filters { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
 .journal-filters select {
-    flex: 0 1 auto;
-    width: auto;
+    flex: 1;
     min-width: 0;
-    min-height: 40px;
-    padding: 0.45rem 1.6rem 0.45rem 0.6rem;
-    border-color: transparent;
-    background-color: transparent;
-    color: var(--text-muted);
-    font-size: max(16px, 0.9rem);
+    padding-right: 2.25rem;
     text-overflow: ellipsis;
+    cursor: pointer;
+    /* Own chevron so the arrow looks the same in every browser */
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475467' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    background-size: 12px;
 }
-.journal-filters select:focus { border-color: var(--surface-border); background-color: var(--surface-color); }
 .journal .entry-list { margin-top: 1.25rem; }
 
 /* ---------- Detail ---------- */
@@ -772,7 +787,6 @@ body.privacy-mode textarea.private-text:focus { filter: none; }
     .stat-tiles { gap: 0.5rem; }
     .stat-num { font-size: 1.4rem; }
     .sum-row { grid-template-columns: 1fr; gap: 0.15rem; }
-    .entry-date { margin-left: 0; }
 }
 
 @media (max-width: 380px) {

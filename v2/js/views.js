@@ -6,6 +6,15 @@ const Views = (() => {
     const SHOW = ['all', ...FLOW_TYPES, 'draft', 'due'];
 
     const accent = type => FLOWS[type].accent;
+
+    // Small line drawings for each practice (decorative, drawn in the practice colour)
+    const ART = {
+        thought: '<path d="M15 30h19a7 7 0 0 0 1-14 9 9 0 0 0-17-3 8 8 0 0 0-3 17z"/><circle cx="12" cy="36" r="2.2"/><circle cx="7" cy="41" r="1.3"/>',
+        desire: '<path d="M24 42V22"/><path d="M24 29c-8 0-12-5-12-11 7 0 12 4 12 11z"/><path d="M24 24c0-7 5-11 12-11 0 6-4 11-12 11z"/><path d="M14 42h20"/>',
+        worry: '<path d="M8 30c4-12 14-16 18-8s-10 14-12 6 12-16 18-10-4 18-12 14 2-14 10-12 10 6 6 12"/><path d="M36 32c2 3 4 4 6 4"/>',
+        anger: '<path d="M24 43c-8 0-13-5-13-12 0-4 2-7 4-9 0 3 1 5 3 6-1-6 2-12 6-17 0 4 2 7 4 9 0-5 2-9 5-12 1 5 0 9 2 12 1-1 2-3 2-5 3 4 4 8 4 12 0 9-7 16-17 16z"/><path d="M24 42c-4 0-6-3-6-6 0-2 1-4 2-5 0 2 1 3 2 3 0-3 1-6 3-8 0 3 2 5 3 6 1-1 1-2 1-3 1 2 2 4 2 6 0 4-3 7-7 7z"/>'
+    };
+    const art = (type, size = 48) => `<svg class="practice-art" width="${size}" height="${size}" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ART[type]}</svg>`;
     const byNewest = (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt);
 
     function decisionLabel(e) {
@@ -36,7 +45,7 @@ const Views = (() => {
                 <span class="entry-text private-text ${e.nsfw ? 'nsfw' : ''}" ${e.nsfw ? `title="${t('nsfw_hold')}"` : ''}>${escapeHtml(e.content || '...')}</span>
                 <span class="entry-meta">
                     <span class="type-tag">${t('type_short.' + e.type)}</span>
-                    ${decision ? `<span class="entry-decision">${escapeHtml(decision)}</span>` : ''}
+                    ${decision ? `<span class="badge entry-decision">${escapeHtml(decision)}</span>` : ''}
                     ${badges.join('')}
                     <span class="entry-date">${relTime(e.updatedAt)}</span>
                 </span>
@@ -132,8 +141,11 @@ const Views = (() => {
             <div class="tiles">
                 ${FLOW_TYPES.map(type => `
                 <button type="button" class="tile" data-start="${type}" style="--accent:${accent(type)}">
-                    <span class="tile-title">${t('type.' + type)}</span>
-                    <span class="tile-desc">${t('learn.' + type + '.what')}</span>
+                    <span class="tile-text">
+                        <span class="tile-title">${t('type.' + type)}</span>
+                        <span class="tile-desc">${t('learn.' + type + '.what')}</span>
+                    </span>
+                    ${art(type)}
                 </button>`).join('')}
             </div>
         </section>
@@ -185,10 +197,13 @@ const Views = (() => {
 
         root.querySelectorAll('.triage-card').forEach(card => {
             card.addEventListener('click', () => {
-                const entry = Store.create(card.dataset.type, { content: box.value.trim(), nsfw: captureNsfw, step: 1 });
+                const content = box.value.trim();
+                // A multi-line worry starts on the first step so the "split into separate worries" option shows
+                const step = card.dataset.type === 'worry' && content.includes('\n') ? 0 : 1;
+                const entry = Store.create(card.dataset.type, { content, nsfw: captureNsfw, step });
                 captureText = '';
                 captureNsfw = false;
-                location.hash = `#/e/${entry.id}/1`;
+                location.hash = `#/e/${entry.id}/${step}`;
             });
         });
         root.querySelectorAll('[data-start]').forEach(btn => btn.addEventListener('click', () => startFlow(btn.dataset.start)));
@@ -249,7 +264,9 @@ const Views = (() => {
     }
 
     function journalView(root, params) {
-        if (params.type) journal.show = params.type;
+        // The Show filter is remembered across visits; a link from Insights overrides it
+        if (params.type) Store.setSetting('journal_show', params.type);
+        journal.show = SHOW.includes(Store.setting('journal_show', 'all')) ? Store.setting('journal_show', 'all') : 'all';
         if (params.q !== undefined) journal.q = params.q;
         const sort = Store.setting('sort', 'newest');
 
@@ -284,7 +301,11 @@ const Views = (() => {
 
         root.querySelector('#jSearch').addEventListener('input', e => { journal.q = e.target.value; draw(); });
         root.querySelector('#jSort').addEventListener('change', e => { Store.setSetting('sort', e.target.value); draw(); });
-        root.querySelector('#jShow').addEventListener('change', e => { journal.show = e.target.value; draw(); });
+        root.querySelector('#jShow').addEventListener('change', e => {
+            journal.show = e.target.value;
+            Store.setSetting('journal_show', journal.show);
+            draw();
+        });
     }
 
     function openJournal(type, q) {
@@ -447,7 +468,7 @@ const Views = (() => {
 
         chart('#insSources', 'thought', countBy(thoughts, e => e.answers.sources), srcLabel);
         chart('#insNature', 'thought', countBy(thoughts, e => e.answers.nature), label('thought', 'nature'),
-            { [t('f.thought.nature.good')]: 'var(--success-text)', [t('f.thought.nature.harmful')]: 'var(--danger-text)', [t('f.thought.nature.unsure')]: '#B54708' });
+            { [t('f.thought.nature.good')]: 'var(--success-text)', [t('f.thought.nature.harmful')]: 'var(--danger-text)', [t('f.thought.nature.unsure')]: '#8A6B3A' });
         chart('#insDesires', 'desire', countBy(desires, e => e.answers.decision), label('desire', 'decision'));
         chart('#insWorries', 'worry', countBy(worries, e => e.answers.group), label('worry', 'group'));
         chart('#insAnger', 'anger', countBy(angers, e => e.answers.response), label('anger', 'response'));
@@ -524,7 +545,7 @@ const Views = (() => {
             </div>
             ${FLOW_TYPES.map(type => `
             <article class="card learn-card" style="--accent:${accent(type)}">
-                <h3>${t('type.' + type)}</h3>
+                <div class="learn-head"><h3>${t('type.' + type)}</h3>${art(type, 56)}</div>
                 <p class="learn-what">${t('learn.' + type + '.what')}</p>
                 <p>${t('learn.' + type + '.why')}</p>
                 <h4>${t('learn_steps')}</h4>
