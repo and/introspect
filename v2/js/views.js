@@ -2,7 +2,8 @@
 const Views = (() => {
     let captureText = '';
     let captureNsfw = false;
-    const journal = { type: 'all', status: 'all', q: '' };
+    const journal = { show: 'all', q: '' };
+    const SHOW = ['all', ...FLOW_TYPES, 'draft', 'due'];
 
     const accent = type => FLOWS[type].accent;
     const byNewest = (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt);
@@ -244,23 +245,20 @@ const Views = (() => {
     }
 
     function journalView(root, params) {
-        if (params.type) journal.type = params.type;
+        if (params.type) journal.show = params.type;
         if (params.q !== undefined) journal.q = params.q;
         const sort = Store.setting('sort', 'newest');
 
         root.innerHTML = `
         <section class="journal">
-            <div class="journal-tools">
-                <input type="search" id="jSearch" placeholder="${t('journal_search')}" value="${escapeHtml(journal.q)}">
-                <select id="jSort">
+            <input type="search" id="jSearch" placeholder="${t('journal_search')}" value="${escapeHtml(journal.q)}">
+            <div class="journal-filters">
+                <select id="jShow" aria-label="${t('filter_show')}">
+                    ${SHOW.map(v => `<option value="${v}" ${journal.show === v ? 'selected' : ''}>${t('show_' + v)}</option>`).join('')}
+                </select>
+                <select id="jSort" aria-label="${t('filter_sort')}">
                     ${['newest', 'oldest', 'recurring'].map(s => `<option value="${s}" ${s === sort ? 'selected' : ''}>${t('sort_' + s)}</option>`).join('')}
                 </select>
-            </div>
-            <div class="chips" id="jType">
-                ${['all', ...FLOW_TYPES].map(v => `<button type="button" class="chip ${journal.type === v ? 'active' : ''}" data-v="${v}" ${v !== 'all' ? `style="--accent:${accent(v)}"` : ''}>${v === 'all' ? t('filter_all') : t('type_short.' + v)}</button>`).join('')}
-            </div>
-            <div class="chips" id="jStatus">
-                ${['all', 'draft', 'done', 'due'].map(v => `<button type="button" class="chip chip-soft ${journal.status === v ? 'active' : ''}" data-v="${v}">${t('filter_' + v)}</button>`).join('')}
             </div>
             <div class="entry-list" id="jList"></div>
         </section>`;
@@ -270,8 +268,8 @@ const Views = (() => {
             const q = journal.q.trim().toLowerCase();
             const sortBy = Store.setting('sort', 'newest');
             let items = Store.all().filter(e => e.content.trim() || e.status === 'done')
-                .filter(e => journal.type === 'all' || e.type === journal.type)
-                .filter(e => journal.status === 'all' || (journal.status === 'due' ? isDue(e) : e.status === journal.status))
+                .filter(e => journal.show === 'all' || e.type === journal.show ||
+                    (journal.show === 'draft' && e.status === 'draft') || (journal.show === 'due' && isDue(e)))
                 .filter(e => !q || searchText(e).includes(q));
             items.sort((a, b) => sortBy === 'oldest' ? new Date(a.createdAt) - new Date(b.createdAt)
                 : sortBy === 'recurring' ? (b.score - a.score) || byNewest(a, b)
@@ -282,19 +280,10 @@ const Views = (() => {
 
         root.querySelector('#jSearch').addEventListener('input', e => { journal.q = e.target.value; draw(); });
         root.querySelector('#jSort').addEventListener('change', e => { Store.setSetting('sort', e.target.value); draw(); });
-        [['#jType', 'type'], ['#jStatus', 'status']].forEach(([sel, key]) => {
-            root.querySelector(sel).addEventListener('click', e => {
-                const chip = e.target.closest('.chip');
-                if (!chip) return;
-                journal[key] = chip.dataset.v;
-                root.querySelectorAll(sel + ' .chip').forEach(c => c.classList.toggle('active', c === chip));
-                draw();
-            });
-        });
+        root.querySelector('#jShow').addEventListener('change', e => { journal.show = e.target.value; draw(); });
     }
 
     function openJournal(type, q) {
-        journal.status = 'all';
         location.hash = `#/journal?type=${encodeURIComponent(type)}&q=${encodeURIComponent(q)}`;
     }
 

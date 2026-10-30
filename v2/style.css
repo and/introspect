@@ -432,7 +432,6 @@ textarea:focus, input:focus, select:focus {
     cursor: pointer;
 }
 .chip.active { background: var(--accent, var(--text-main)); border-color: var(--accent, var(--text-main)); color: #fff; }
-.chip-soft.active { background: var(--text-main); border-color: var(--text-main); }
 
 /* Blessing */
 .blessing {
@@ -474,9 +473,20 @@ textarea:focus, input:focus, select:focus {
 .done-actions { display: flex; flex-direction: column; gap: 0.5rem; max-width: 320px; margin: 1.5rem auto 0; }
 
 /* ---------- Journal ---------- */
-.journal-tools { display: flex; gap: 0.5rem; }
-.journal-tools select { width: auto; flex-shrink: 0; }
-.journal .chips { margin-top: 0.6rem; }
+.journal-filters { display: flex; gap: 0.25rem; margin: 0.5rem 0 0 -0.6rem; }
+.journal-filters select {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+    min-height: 40px;
+    padding: 0.45rem 1.6rem 0.45rem 0.6rem;
+    border-color: transparent;
+    background-color: transparent;
+    color: var(--text-muted);
+    font-size: max(16px, 0.9rem);
+    text-overflow: ellipsis;
+}
+.journal-filters select:focus { border-color: var(--surface-border); background-color: var(--surface-color); }
 .journal .entry-list { margin-top: 1.25rem; }
 
 /* ---------- Detail ---------- */
