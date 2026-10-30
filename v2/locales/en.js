@@ -65,7 +65,11 @@ window.translations.en = {
     "wiz_date_tomorrow": "Tomorrow",
     "wiz_date_weekend": "This weekend",
     "wiz_date_week": "Next week",
-    "wiz_keys": "Tip: Enter for next, Shift+Enter for a new line, number keys pick an option.",
+    "wiz_keys_text": "Enter to continue. Shift+Enter starts a new line.",
+    "wiz_keys_split": "Enter starts a new line (one worry per line). {mod}+Enter to continue.",
+    "wiz_keys_input": "Enter to continue.",
+    "wiz_keys_options": "Press 1-{n} to pick. Enter to continue.",
+    "wiz_keys_note": "Click the note box to type.",
     "scale_low": "Light",
     "scale_high": "Very strong",
 

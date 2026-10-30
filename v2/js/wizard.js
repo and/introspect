@@ -62,7 +62,7 @@ const Wizard = (() => {
                 ${step.required ? '' : `<button class="btn btn-ghost" data-act="skip">${t('wiz_skip')}</button>`}
                 <button class="btn btn-primary" data-act="next">${isLast ? t('wiz_finish') : t('wiz_next')}</button>
             </div>
-            <p class="wiz-keys">${t('wiz_keys')}</p>
+            ${keysHint(step) ? `<p class="wiz-keys">${keysHint(step)}</p>` : ''}
         </section>`;
 
         bind(root, entry, step);
@@ -75,6 +75,17 @@ const Wizard = (() => {
             root.querySelector('.wiz-q').focus({ preventScroll: true });
         }
         window.scrollTo(0, 0);
+    }
+
+    // Keyboard hint that only lists keys that work on this step
+    function keysHint(step) {
+        const mod = /Mac|iPhone|iPad/.test(navigator.platform) ? 'Cmd' : 'Ctrl';
+        if (step.type === 'text' && step.splitLines) return t('wiz_keys_split', { mod });
+        if (step.type === 'text' && !step.short) return t('wiz_keys_text');
+        if (step.type === 'text' || step.type === 'date') return t('wiz_keys_input');
+        if (step.options) return t('wiz_keys_options', { n: step.options.length }) + (step.note ? ' ' + t('wiz_keys_note') : '');
+        if (step.type === 'scale') return t('wiz_keys_options', { n: 5 });
+        return '';
     }
 
     function optionHtml(entry, step, value, i, selected, suggested) {
