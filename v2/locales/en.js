@@ -49,7 +49,6 @@ window.translations.en = {
     "home_due": "Due today",
     "home_recent": "Recent",
     "home_see_all": "See all",
-    "home_empty_hint": "Tip: you don't need to know the practices. Write what you feel and pick the closest card.",
 
     // Wizard
     "wiz_step": "Step {n} of {total}",

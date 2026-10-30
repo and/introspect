@@ -113,7 +113,6 @@ const Views = (() => {
                 </div>
                 <label class="check-row"><input type="checkbox" id="captureNsfw" ${captureNsfw ? 'checked' : ''}> <span>${t('home_nsfw')}</span></label>
             </div>
-            ${entries.length ? '' : `<p class="hint">${t('home_empty_hint')}</p>`}
         </section>
 
         ${due.length ? `
