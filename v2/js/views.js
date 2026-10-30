@@ -29,7 +29,8 @@ const Views = (() => {
         if (e.score > 0) badges.push(`<span class="badge">${t('badge_recurs', { n: e.score + 1 })}</span>`);
         const decision = e.status === 'done' ? decisionLabel(e) : '';
         return `
-        <a class="entry-card" href="${entryHref(e)}" style="--accent:${accent(e.type)}">
+        <div class="entry-row" data-row="${e.id}" style="--accent:${accent(e.type)}">
+        <a class="entry-card" href="${entryHref(e)}">
             <span class="entry-main">
                 <span class="entry-text private-text ${e.nsfw ? 'nsfw' : ''}" ${e.nsfw ? `title="${t('nsfw_hold')}"` : ''}>${escapeHtml(e.content || '...')}</span>
                 <span class="entry-meta">
@@ -39,7 +40,44 @@ const Views = (() => {
                     <span class="entry-date">${relTime(e.updatedAt)}</span>
                 </span>
             </span>
-        </a>`;
+        </a>
+        ${e.status === 'done' ? recurButton(e) : ''}
+        </div>`;
+    }
+
+    function recurButton(e) {
+        return `<button type="button" class="recur-btn" data-recur="${e.id}" title="${t('recur_title')}" aria-label="${t('recur_title')}">+1</button>`;
+    }
+
+    // "It came again": count one more occurrence without redoing the practice
+    function recur(id) {
+        const e = Store.get(id);
+        if (!e) return;
+        Store.update(e.id, { score: (e.score || 0) + 1, recurredAt: [...(e.recurredAt || []), new Date().toISOString()] });
+        toast(t('recur_toast', { n: e.score + 1 }));
+        return e;
+    }
+
+    // Past completed entries that look like the text being typed
+    function findSimilar(text) {
+        const words = str => new Set(str.toLowerCase().split(/[^\p{L}\p{N}']+/u).filter(w => w.length > 2));
+        const q = text.trim().toLowerCase();
+        if (q.length < 4) return [];
+        const qw = words(q);
+        return Store.all()
+            .filter(e => e.status === 'done' && e.content.trim())
+            .map(e => {
+                const c = e.content.trim().toLowerCase();
+                if (c === q || (q.length >= 8 && (c.includes(q) || q.includes(c)))) return { e, score: 1 };
+                const cw = words(c);
+                const shared = [...qw].filter(w => cw.has(w)).length;
+                const ratio = shared / Math.max(1, Math.min(qw.size, cw.size));
+                return { e, score: shared >= 2 ? ratio : 0 };
+            })
+            .filter(m => m.score >= 0.6)
+            .sort((a, b) => b.score - a.score || b.e.score - a.e.score)
+            .slice(0, 3)
+            .map(m => m.e);
     }
 
     // ---------- Home ----------
@@ -54,6 +92,7 @@ const Views = (() => {
         <section class="card capture">
             <label for="capture" class="capture-label">${t('home_prompt')}</label>
             <textarea id="capture" class="private-text" rows="3" placeholder="${t('home_placeholder')}">${escapeHtml(captureText)}</textarea>
+            <div class="seen-before" hidden></div>
             <div class="triage" ${captureText.trim() ? '' : 'hidden'}>
                 <p class="triage-q">${t('home_choose')}</p>
                 <div class="triage-grid">
@@ -108,11 +147,27 @@ const Views = (() => {
             const guess = guessType(box.value);
             root.querySelectorAll('.triage-card').forEach(c => c.classList.toggle('hinted', c.dataset.type === guess));
         };
+        const seen = root.querySelector('.seen-before');
+        const showSimilar = () => {
+            const matches = findSimilar(box.value);
+            seen.hidden = !matches.length;
+            seen.innerHTML = matches.length ? `
+                <p class="seen-q">${t('seen_before')}</p>
+                <div class="entry-list">${matches.map(entryCard).join('')}</div>` : '';
+        };
         highlight();
+        showSimilar();
         box.addEventListener('input', () => {
             captureText = box.value;
             triage.hidden = !box.value.trim();
             highlight();
+            showSimilar();
+        });
+        // +1 from the capture box: the thought was counted, so clear it
+        seen.addEventListener('click', e => {
+            if (!e.target.closest('[data-recur]')) return;
+            captureText = '';
+            setTimeout(() => home(root));
         });
         box.addEventListener('keydown', e => {
             // Enter jumps to the suggested card; Shift+Enter keeps a new line
@@ -281,6 +336,7 @@ const Views = (() => {
                 <button class="btn btn-danger-ghost" data-act="delete">${t('detail_delete')}</button>
             </div>
 
+            ${entry.recurredAt.length ? `<p class="hint">${t('detail_last_recur', { when: relTime(entry.recurredAt[entry.recurredAt.length - 1]) })}</p>` : ''}
             ${rows ? `<h3>${t('detail_answers')}</h3><dl class="summary">${rows}</dl>` : ''}
             ${entry.outcome.completed ? `<p class="badge badge-done">${t('detail_completed')} · ${formatDate(entry.outcome.completed)}</p>` : ''}
 
@@ -308,7 +364,7 @@ const Views = (() => {
             location.hash = `#/e/${entry.id}/1`;
         });
         on('complete', () => { Store.update(entry.id, { outcome: { ...entry.outcome, completed: new Date().toISOString() } }); rerender(); });
-        on('recur', () => { Store.update(entry.id, { score: (entry.score || 0) + 1 }); rerender(); });
+        on('recur', () => { recur(entry.id); rerender(); });
         on('nsfw', e => { Store.update(entry.id, { nsfw: e.target.checked }); rerender(); });
         on('comment', () => {
             const text = root.querySelector('#commentText').value.trim();
@@ -605,5 +661,5 @@ const Views = (() => {
         draw();
     }
 
-    return { home, homeKey, done, journal: journalView, detail, insights, learn, settings, onboarding };
+    return { recur, entryCard, home, homeKey, done, journal: journalView, detail, insights, learn, settings, onboarding };
 })();

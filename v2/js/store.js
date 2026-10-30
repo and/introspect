@@ -85,6 +85,7 @@ const Store = (() => {
             step: e.step || 0,
             linkedFrom: e.linkedFrom || null,
             comments: e.comments || [],
+            recurredAt: e.recurredAt || [],
             history: e.history || [],
             ...(e.importedFromV1 ? { importedFromV1: true } : {})
         };

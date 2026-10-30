@@ -95,6 +95,9 @@ window.translations.en = {
     "badge_draft": "Unfinished",
     "badge_due": "Due {date}",
     "badge_recurs": "came {n}x",
+    "recur_title": "It came again (+1)",
+    "recur_toast": "Counted. It has come {n} times.",
+    "seen_before": "Has this come before? Tap +1 to count it.",
     "nsfw_hold": "Hold to reveal",
 
     // Detail
@@ -104,6 +107,7 @@ window.translations.en = {
     "detail_revisit": "Revisit",
     "detail_recur": "It came again (+1)",
     "detail_mark_done": "Mark as done",
+    "detail_last_recur": "Last came {when}.",
     "detail_completed": "Done",
     "detail_delete": "Delete",
     "detail_delete_confirm": "Tap again to delete",

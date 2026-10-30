@@ -163,6 +163,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fontDecrease').addEventListener('click', () => changeFontSize(-10));
     bindNsfwReveal();
 
+    // +1 buttons on entry rows (home, journal, detail links)
+    document.addEventListener('click', e => {
+        const btn = e.target.closest('[data-recur]');
+        if (!btn) return;
+        e.preventDefault();
+        const entry = Views.recur(btn.dataset.recur);
+        const row = btn.closest('.entry-row');
+        if (entry && row) {
+            row.outerHTML = Views.entryCard(entry);
+            document.querySelector(`[data-row="${entry.id}"] .recur-btn`)?.classList.add('bumped');
+        }
+    });
+
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
             if (document.querySelector('.overlay')) return;
