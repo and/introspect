@@ -46,12 +46,41 @@ html {
 
 body {
     font-family: var(--font-family);
-    background: var(--bg-color);
+    background: #FFFFFF;
     color: var(--text-main);
     line-height: 1.5;
     min-height: 100vh;
     min-height: 100dvh;
     -webkit-tap-highlight-color: transparent;
+}
+
+/* Soft colour blob in the top-right that slowly changes shape and fades into white.
+   Two layers with different timings so the outline never repeats exactly. */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    z-index: -1;
+    pointer-events: none;
+    will-change: transform, border-radius;
+}
+body::before {
+    top: -35vmax;
+    right: -25vmax;
+    width: 75vmax;
+    height: 75vmax;
+    background: radial-gradient(closest-side, rgba(230, 53, 34, 0.16), rgba(245, 150, 60, 0.10) 45%, rgba(255, 255, 255, 0) 100%);
+    border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+    animation: amoeba-a 22s ease-in-out infinite alternate;
+}
+body::after {
+    top: -20vmax;
+    right: -15vmax;
+    width: 50vmax;
+    height: 50vmax;
+    background: radial-gradient(closest-side, rgba(245, 184, 61, 0.14), rgba(255, 255, 255, 0) 100%);
+    border-radius: 60% 40% 35% 65% / 55% 60% 40% 45%;
+    animation: amoeba-b 17s ease-in-out infinite alternate;
 }
 
 a { color: inherit; }
@@ -80,7 +109,7 @@ h2:focus { outline: none; }
     padding-top: calc(0.75rem + env(safe-area-inset-top));
     padding-left: calc(1.5rem + env(safe-area-inset-left));
     padding-right: calc(1.5rem + env(safe-area-inset-right));
-    background: var(--bg-color);
+    background: rgba(255, 255, 255, 0.82);
     border-bottom: 1px solid var(--surface-border);
 }
 
@@ -674,6 +703,16 @@ body.privacy-mode textarea.private-text:focus { filter: none; }
 /* ---------- Motion ---------- */
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes amoeba-a {
+    0% { transform: translate(0, 0) rotate(0deg); border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%; }
+    50% { transform: translate(-4vmax, 3vmax) rotate(25deg); border-radius: 58% 42% 38% 62% / 55% 38% 62% 45%; }
+    100% { transform: translate(-1vmax, 6vmax) rotate(-15deg); border-radius: 37% 63% 51% 49% / 62% 53% 47% 38%; }
+}
+@keyframes amoeba-b {
+    0% { transform: translate(0, 0) rotate(0deg); border-radius: 60% 40% 35% 65% / 55% 60% 40% 45%; }
+    50% { transform: translate(-6vmax, -2vmax) rotate(-30deg); border-radius: 40% 60% 62% 38% / 38% 47% 53% 62%; }
+    100% { transform: translate(-3vmax, 4vmax) rotate(20deg); border-radius: 52% 48% 41% 59% / 63% 36% 64% 37%; }
+}
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
