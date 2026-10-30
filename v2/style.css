@@ -58,7 +58,18 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Soft teal blob in the top-right that slowly changes shape and fades into white.
+/* Blob colours: teal by default, the practice colour while inside a practice */
+body {
+    --blob-a: rgba(47, 140, 140, 0.16);
+    --blob-b: rgba(120, 175, 205, 0.10);
+    --blob-c: rgba(150, 200, 185, 0.16);
+}
+body[data-practice="thought"] { --blob-a: rgba(62, 92, 118, 0.16); --blob-b: rgba(120, 150, 185, 0.10); --blob-c: rgba(150, 175, 205, 0.16); }
+body[data-practice="desire"] { --blob-a: rgba(150, 115, 55, 0.16); --blob-b: rgba(205, 175, 115, 0.12); --blob-c: rgba(220, 195, 140, 0.18); }
+body[data-practice="worry"] { --blob-a: rgba(11, 107, 106, 0.16); --blob-b: rgba(110, 175, 170, 0.10); --blob-c: rgba(150, 200, 190, 0.16); }
+body[data-practice="anger"] { --blob-a: rgba(143, 78, 69, 0.15); --blob-b: rgba(200, 140, 125, 0.10); --blob-c: rgba(220, 170, 155, 0.16); }
+
+/* Soft blob in the top-right that slowly changes shape and fades into white.
    Two layers with different timings so the outline never repeats exactly. */
 body::before,
 body::after {
@@ -73,7 +84,7 @@ body::before {
     right: -25vmax;
     width: 75vmax;
     height: 75vmax;
-    background: radial-gradient(closest-side, rgba(47, 140, 140, 0.16), rgba(120, 175, 205, 0.10) 45%, rgba(255, 255, 255, 0) 100%);
+    background: radial-gradient(closest-side, var(--blob-a), var(--blob-b) 45%, rgba(255, 255, 255, 0) 100%);
     border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
     animation: amoeba-a 22s ease-in-out infinite alternate;
 }
@@ -82,7 +93,7 @@ body::after {
     right: -15vmax;
     width: 50vmax;
     height: 50vmax;
-    background: radial-gradient(closest-side, rgba(150, 200, 185, 0.16), rgba(255, 255, 255, 0) 100%);
+    background: radial-gradient(closest-side, var(--blob-c), rgba(255, 255, 255, 0) 100%);
     border-radius: 60% 40% 35% 65% / 55% 60% 40% 45%;
     animation: amoeba-b 17s ease-in-out infinite alternate;
 }

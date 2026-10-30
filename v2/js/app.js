@@ -91,6 +91,10 @@ function render() {
         a.classList.toggle('active', a.dataset.route === (name || 'home'));
     });
     document.body.classList.toggle('in-wizard', name === 'e' && step !== 'done');
+    // Background gradient takes the practice colour on practice and entry pages
+    const current = (name === 'e' || name === 'entry') && Store.get(id);
+    if (current) document.body.dataset.practice = current.type;
+    else delete document.body.dataset.practice;
 
     if (name === 'e') {
         const entry = Store.get(id);
