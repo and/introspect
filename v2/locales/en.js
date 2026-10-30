@@ -100,7 +100,7 @@ window.translations.en = {
     "badge_draft": "Unfinished",
     "badge_due": "Due {date}",
     "badge_recurs": "came {n}x",
-    "recur_title": "It came again (+1)",
+    "recur_aria": "Came {n} times. Tap if it came again.",
     "recur_toast": "Counted. It has come {n} times.",
     "seen_before": "Has this come before? Tap +1 to count it.",
     "nsfw_hold": "Hold to reveal",

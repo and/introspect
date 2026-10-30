@@ -266,19 +266,38 @@ textarea:focus, input:focus, select:focus {
     padding: 0.85rem 1rem;
     text-decoration: none;
 }
+/* Recurrence counter: shows how many times it came; tap to add one */
 .recur-btn {
     flex-shrink: 0;
-    width: 56px;
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
     border: none;
     border-left: 1px solid var(--surface-border);
     background: none;
-    color: var(--accent);
-    font-weight: 700;
-    font-size: 0.95rem;
     cursor: pointer;
 }
+.recur-count { font-size: 1.25rem; font-weight: 700; line-height: 1; color: var(--text-main); }
+.recur-plus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--surface-border);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+}
 .recur-btn:active { background: var(--surface-hover); }
-.recur-btn.bumped { background: var(--success-bg); color: var(--success-text); }
+.recur-btn.bumped { background: var(--success-bg); }
+.recur-btn.bumped .recur-count { color: var(--success-text); animation: bump 0.3s ease-out; }
+@keyframes bump { 50% { transform: scale(1.35); } }
 
 .seen-before { margin-top: 1rem; }
 .seen-q { font-weight: 600; margin-bottom: 0.5rem; }
@@ -644,6 +663,7 @@ body.privacy-mode textarea.private-text:focus { filter: none; }
     .triage-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
     .tile:hover, .entry-row:hover { box-shadow: var(--shadow); border-color: #D0D5DD; }
     .recur-btn:hover { background: var(--surface-hover); }
+    .recur-btn:hover .recur-plus { border-color: var(--accent); }
     .opt:hover { border-color: var(--accent); }
     .chip:hover { border-color: #D0D5DD; }
     .treemap-node:hover { filter: brightness(1.15); }

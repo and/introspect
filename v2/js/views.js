@@ -27,7 +27,7 @@ const Views = (() => {
         const badges = [];
         if (e.status === 'draft') badges.push(`<span class="badge badge-draft">${t('badge_draft')}</span>`);
         if (isDue(e)) badges.push(`<span class="badge badge-due">${t('badge_due', { date: formatDate(e.outcome.dueDate) })}</span>`);
-        if (e.score > 0) badges.push(`<span class="badge">${t('badge_recurs', { n: e.score + 1 })}</span>`);
+        if (e.score > 0 && e.status !== 'done') badges.push(`<span class="badge">${t('badge_recurs', { n: e.score + 1 })}</span>`);
         const decision = e.status === 'done' ? decisionLabel(e) : '';
         return `
         <div class="entry-row" data-row="${e.id}" style="--accent:${accent(e.type)}">
@@ -47,7 +47,12 @@ const Views = (() => {
     }
 
     function recurButton(e) {
-        return `<button type="button" class="recur-btn" data-recur="${e.id}" title="${t('recur_title')}" aria-label="${t('recur_title')}">+1</button>`;
+        const n = (e.score || 0) + 1;
+        const label = t('recur_aria', { n });
+        return `<button type="button" class="recur-btn" data-recur="${e.id}" title="${label}" aria-label="${label}">
+            <span class="recur-count">${n}</span>
+            <span class="recur-plus" aria-hidden="true">+</span>
+        </button>`;
     }
 
     // "It came again": count one more occurrence without redoing the practice
